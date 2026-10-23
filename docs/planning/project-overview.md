@@ -4,6 +4,10 @@
 **Decision record and remaining work:** [project-decisions.md](project-decisions.md).  
 **Historical source:** [Gemini summary](gemini-conversation.md); its example code is discarded.
 
+**Inference clarification:** Target **RunPod Serverless + vLLM + a compatible quantization of the owner's RVN checkpoint**, with Q4_K_M as the writing/style reference, not a mandatory serving format. Public research found an NVFP4 companion with documented vLLM execution, but not verified APC/long-context/low-cost serving; see [inference verification](inference-verification.md). The exact owner checkpoint still needs identification.
+
+**Maintained production guidance:** [Character engineering](../character-engineering/README.md) covers context/voice production, adult-content and self-harm boundaries, deterministic pre-dispatch controls, prompt-injection defense, and reviewed output delivery. These controls are specified, not implemented yet.
+
 ## 1. Objective and business strategy
 
 **Build a profitable subscription companion to the owner's published stories.** Readers pay to talk with characters they already care about, or to play those characters in private interactive scenes. Optimize for recurring contribution profit and low owner workload, rather than message volume or technical sophistication.
@@ -16,9 +20,9 @@ The differentiators are author-grounded characterization, scene-specific knowled
 
 - One published story, two recognizable characters, and three reusable starting scenes drawn from already-published material. If only one character has enough source material, launch with one rather than delaying for invented content.
 - Both **Talk to a character** and **Play as a character**, using the same validated story assets and separate mode instructions.
-- Mobile-first web application, streaming replies, saved playthroughs, brief continuity memory, subscription checkout, self-service cancellation, and basic support/report controls.
+- Mobile-first web application, reviewed replies, saved playthroughs, brief continuity memory, subscription checkout, self-service cancellation, and basic support/report controls. At launch, buffer and check the full response before displaying it; raw live-token streaming is deferred.
 - One small new or refreshed scene per month, usually tied to published material. Do not promise an ongoing stream of original commissioned fiction or a weekly release schedule.
-- First build one character/scene end to end; expand to the launch catalog after it works. No multi-character group chat, voice, images, public community, user-uploaded characters, or custom GPU infrastructure at launch.
+- First build one character/scene end to end; expand to the launch catalog after it works. No multi-character group chat, voice, images, public community, user-uploaded characters, or bespoke GPU orchestration at launch. A pinned compatible vLLM worker image is part of inference setup if required.
 
 ## 2. Reader experience and retention
 
@@ -48,6 +52,12 @@ Readers select the latest chapter they have read; default to chapter one. This i
 
 Evaluate the complete experience in both modes. Better memory, voice, and scene hooks take priority over a larger catalog.
 
+### Adult-content and safety boundary
+
+RVN is also selected for willingness to support reader-initiated NSFW fictional interactions. Allow eligible consensual adult content only in an explicitly enabled adult setting; launch preview is non-explicit. Never facilitate self-harm/suicide or allow character roleplay to override application protections. Recovery/support and non-instructional difficult themes remain permitted. See the detailed [content and safety policy](../character-engineering/content-safety.md), including age/consent boundaries and crisis-response handling.
+
+Before dispatch, enforce ownership, access/settings, scope, schema/token limits, and structural injection controls in deterministic code; apply independent category-aware semantic moderation as well as context instructions. Review complete output before release. No filter or system prompt guarantees perfect semantic safety; the live character model has no tools, secrets, or authority over accounts. [Prompt-injection defense](../character-engineering/prompt-injection.md) defines the maintained layered design.
+
 ## 3. Subscription offer
 
 Prices are **USD per month, before applicable tax**. Use monthly billing only initially. These are selected launch hypotheses to measure, not proven willingness-to-pay or profit forecasts.
@@ -58,7 +68,7 @@ Prices are **USD per month, before applicable tax**. Use monthly billing only in
 | Reader | $12/month | 500 per billing period; at most 100/day | 10 | Full released interactive catalog, both modes, memory, and new scenes. |
 | Storyweaver | $24/month | 1,200 per billing period; at most 200/day | 30 | Reader benefits with more playthroughs and replies. |
 
-**One reply** means one successfully completed assistant generation, including a regenerate or requested continuation. Saving, loading, editing memory, browsing scenes, and billing/support actions do not consume replies. Both paid tiers get the same model quality and maximum response length; the higher tier buys capacity, not relief from a deliberately degraded experience.
+**One reply** means one successfully completed, safety-approved assistant generation saved and available to the reader, including a regenerate or requested continuation. Saving, loading, editing memory, browsing scenes, billing/support actions, application boundary/support messages, and blocked candidates do not consume replies. Both paid tiers get the same model quality and maximum response length; the higher tier buys capacity, not relief from a deliberately degraded experience.
 
 ### Billing and entitlement rules
 
@@ -86,7 +96,7 @@ Initial planning assumptions:
 | Item | Selected planning limit |
 | --- | --- |
 | Fees plus refund/chargeback reserve | Model conservatively as 25% of plan price until actual channel costs are known. |
-| Fully loaded inference per completed reply | At most $0.002 averaged over representative full-length sessions, including memory updates, failed attempts, and cancellations. |
+| Fully loaded inference/guard cost per delivered reply | Initial target at most $0.002; unverified for RVN on RunPod. Include worker startup/idle/storage, memory, moderation/input-output checks, blocked candidates, failures, and cancellations over realistic traffic. |
 | Fixed hosting, database, email, and monitoring | Target at most $75/month before growth; verify actual vendor quotes. |
 | Initial development/provider test spend | At most $25 total. |
 | Monthly inference authorization | $50 baseline plus 15% of net collected subscription receipts for the current month, capped at $250/month until deliberately increased. Net receipts here exclude tax, refunds, and channel/payment fees. |
@@ -94,11 +104,14 @@ Initial planning assumptions:
 
 At the $0.002 assumption, a fully used Reader allowance costs $1 and Storyweaver costs $2.40 in inference. After the 25% reserve, contribution is approximately **$8 (66.7%)** and **$15.60 (65%)** respectively, before fixed overhead. At $75 fixed cost, approximately ten fully utilizing Reader subscribers cover infrastructure in this simplified model. This is not break-even after owner labor, acquisition expense, or income taxes.
 
-Verify the model/provider against those assumptions before selling these allowances. If quality cannot meet this cost floor, adjust the launch offer before checkout opens; do not solve the mismatch through undisclosed throttling or poorer paid responses.
+Validate RVN on RunPod against these assumptions before selling these allowances. GPU execution billing is not a per-token quote: cold starts, warm idle time, batching, and storage affect the effective reply cost, especially at low volume. The prices/allowances and cost targets remain provisional until measured together. If the preferred model cannot meet the commercial target, optimize its deployment first, then revise the offer or authorized budget before checkout opens; do not silently substitute a different model or degrade paid responses.
+
+The researched Flash-Next NVFP4 candidate has approximately 180 GB of weights and publisher-reported dual ~96 GB GPU execution, with caching disabled and only 2K context tested. **It does not substantiate these small budgets or per-reply targets.** Confirm whether it is the owner's checkpoint before provisioning; a more expensive test requires one concrete budget exception, not an assumed authorization. See [evidence and limitations](inference-verification.md).
 
 ### Automatic budget protection
 
 - Maintain a durable internal cost ledger and a conservative reservation for each provider request. Reserve for background memory work as well as visible replies; reconcile to actual usage/cost.
+- Account separately for non-request RunPod charges such as storage and warm/startup worker time. Reserve these from the same inference authorization and reconcile against provider billing; token counts alone cannot enforce a GPU-billed spending limit. Bound worker concurrency and warm-worker lifetime so background charges cannot grow unobserved.
 - At 70% of authorized monthly inference spend, notify the owner and pause new free previews and optional background generation. At 90%, disable nonessential evaluations and send one actionable alert.
 - At 100%, reject new inference requests before dispatch; existing reservations cover in-flight work. Keep history, billing, export, and cancellation available and show a service notice. This is an emergency cost boundary, not the normal capacity plan.
 - Notify the owner when forecast spend will hit the cap before renewal periods end; resolve capacity early. Use provider-side spending controls where supported, but do not assume they are exact hard caps.
@@ -121,18 +134,38 @@ These named vendors/libraries are selected defaults, not verified current quotes
 
 Use **standalone subscriptions with hosted Stripe Checkout and the customer portal** if the actual published content/business is eligible for Stripe. Keep payment details out of the application; synchronize entitlement from verified, idempotent billing events with daily reconciliation.
 
-Verify billing eligibility against representative story material before activating checkout. Fansly's presence in the old notes is not evidence of the intended content category, and Stripe eligibility must not be presumed. If Stripe is unsuitable, select a content-compatible subscription processor with supported entitlement APIs. An unsupported billing dependency is a specific implementation exception, not a reason to leave every product decision open.
+Verify billing eligibility for the now-explicit **adult fictional chat offering**, not merely the published text, before activating checkout. Stripe is not an approved payment choice for this offering merely because hosted checkout is convenient. Select a compatible subscription processor with supported entitlement APIs if it is ineligible. An unsupported billing dependency is a specific implementation exception, not a reason to leave every product decision open.
 
 Fansly is a potential acquisition/publication channel, **not the login or billing dependency for the baseline product**. Do not build scraping, shared redemption codes, screenshot verification, or recurring manual entitlement checks. A platform-specific benefit can be added later only through a supported, automatable integration. Do not promise automatic Fansly subscriber access at launch.
 
-### Inference
+### Inference: RunPod Serverless + vLLM + quantized RVN
 
-- Start with a **managed per-token inference API through OpenRouter**, using a pinned model/provider endpoint and a thin adapter. Verify intended-content support, commercial rights, retention/training settings, stable streaming, and prices before sending production data.
-- Run a small automated bake-off of at most three currently available models using the same 30 story/mode cases. Select the cheapest candidate meeting the quality, latency, and fully loaded cost thresholds; retain its exact model/provider identity in configuration. The agent chooses the winner from evidence, without a separate routine owner sign-off.
-- If OpenRouter has no eligible, reliable endpoint, evaluate a direct managed endpoint next. Self-managed RunPod/vLLM is a later measured optimization, not the default fallback or launch requirement.
-- If RunPod evaluation becomes necessary, use the owner's later system with the **RunPod MCP tool** to verify current models/images, GPU availability, storage, pricing, and scaling behavior. Defer those provider-specific checks to that environment; the old Gemini configuration is not a validated starting point.
-- No premium model routing, multi-agent reply chains, per-turn LLM judges, or web-search tools in the live chat path. Use one generation plus occasional bounded memory compaction.
-- Use static-first deterministic context construction and supported caching when available. Budget as if cache discounts were absent. Never advertise perfect caching or unlimited context.
+```text
+Reader → application → authenticated RunPod Serverless endpoint
+                              → GPU worker → pinned RVN model
+             |
+             └→ PostgreSQL: subscriptions, playthroughs, memory, usage
+```
+
+- **RunPod Serverless is the selected inference provider and vLLM the preferred serving engine**, separate from managed application/database hosting. Match the writing Q4_K_M file to its parent RVN checkpoint, then select a compatible quantization of that checkpoint. Pin repository/revision, file checksum, tokenizer/template, engine/image, and settings. Do not substitute another RVN family because its name looks similar.
+- **Verified candidate:** [`0bserverx/RVN-Qwen3.8-Flash-Next-Abliterated-Uncensored-NVFP4`](https://huggingface.co/0bserverx/RVN-Qwen3.8-Flash-Next-Abliterated-Uncensored-NVFP4), using `W4A16_NVFP4`, has publisher-reported custom vLLM execution. Its tested profile disables prefix caching and uses 2K context; APC, our 8K input/600 output, and affordable serverless deployment remain unproven. No RVN AWQ/GPTQ repository was found in the bounded public search. See the [dated verification record](inference-verification.md) for sources, sizes, runtime, and limitations.
+- Q4_K_M is GGUF, not AWQ/NVFP4. vLLM documents experimental GGUF plugin support, but that does not verify this architecture or split artifact. Prefer a tested vLLM-native serving quantization where possible; llama.cpp remains a writing/reference or explicitly evaluated fallback engine, not the primary production recommendation. Do not re-quantize the GGUF by default or relabel its metadata.
+- Quantization is chosen to reduce weight storage and transfer/memory requirements. It does not guarantee a particular loading time, throughput, or character fidelity; benchmark the actual file and hardware. Quantized weights also do not remove context/KV-cache memory requirements.
+- Use the owner's later **RunPod-MCP-enabled system** to verify current GPU offerings, worker/image support, storage/mounts, billing, job lifecycle, and scaling. This is validation of the **primary deployment**, not an optional alternative. MCP inspection does not replace an actual cold/warm load and quality test.
+- Begin the bounded deployment test with zero minimum workers and one maximum worker, on a verified compatible GPU. Determine per-worker concurrency empirically. Ten application requests is an admission ceiling, not a promise that one worker can serve ten promptly; lower admission/queue limits if measurements require it. Pin image/model revisions and automate worker build/deployment.
+- Scale-to-zero is the initial idle-cost policy. Compare measured cold starts with warm capacity or bounded idle retention available on the chosen setup. Warm capacity is permitted only if it fits existing authorization and commercial forecast; measure preparation plus complete-output review instead of promising live first-token latency. Display a clear preparation state outside the fictional dialogue.
+- No default OpenRouter fallback, cheapest-model selection, automatic model replacement, premium routing, multi-agent reply chains, per-turn generative quality judges, or web-search tools in the live chat path. Independent input/output safety moderation is a required exception, with measured cost/latency. Use one RVN response plus occasional bounded memory compaction. Service failure should produce a recoverable service notice, not an unannounced character/model change.
+- Target **tested vLLM APC** with deterministic static-first context. It saves repeated prefill work, not decode or all GPU costs. The hybrid RVN architecture requires explicit support testing; the publisher's cache-disabled evidence is insufficient. Compare APC off/on at realistic traffic and budget without guaranteed hits or warm state. Use server-generated per-account cache salts and cryptographic hashing where supported, verifying handler propagation; this deliberately forgoes cross-account cache sharing. Never gain cache efficiency by mixing private data or weakening guards. Full acceptance criteria are in [inference verification](inference-verification.md).
+
+### Character-style consistency
+
+Using RVN is the strongest available baseline because the owner already writes with it; it is not a guarantee of identical output. The published prose also reflects prompts, selected generations, edits, sampling settings, and narrative context.
+
+For each character/scene, supply a compact **voice packet**: spoiler-eligible excerpts of actual dialogue/prose, characteristic diction and sentence rhythm, behavior/relationship anchors, and examples of unwanted generic narration. Preserve third-person story voice in narrator mode and adapt it deliberately to direct interaction in character mode. Do not imitate the book by copying long passages into every response.
+
+Compare RVN outputs against author-selected story excerpts and calibration examples across both modes and long conversations. Use the writing workflow's template/settings as a starting reference, then tune for interaction. More context improves access to facts/examples but cannot make any arbitrary model equally good at using them; excess context may also increase cost and dilute relevant voice cues.
+
+Keep the RVN checkpoint unless measured evidence establishes a compelling reason for an agreed change. A vLLM-compatible quantization of the same checkpoint is now an authorized deployment choice, with mandatory style/safety comparison against the Q4_K_M writing reference. A different model family is not an autonomous replacement. Follow the maintained [character/context production guide](../character-engineering/character-context.md) rather than relying on model identity alone.
 
 ## 6. Story content, memory, and data
 
@@ -155,16 +188,18 @@ New playthroughs use the latest passing content version. Existing playthroughs p
 | Output | Paid: up to 600 tokens; preview: up to 300. Target natural responses of roughly 100–200 words, shorter for brief dialogue. |
 | Model context capacity | At least 16,000 tokens, leaving room above the enforced input/output budgets. |
 | Concurrency | One in-flight generation per account; six new requests/minute and 60/hour, in addition to plan allowances. |
-| Response timing | Target p95 first visible text within five seconds and p95 completion within 30 seconds under the initial load test; 60-second request deadline. |
+| Response timing | Buffer and review the whole reply before first text. Initial warm goal: p95 reviewed reply available within 30 seconds; cold goal within 60 seconds, both unverified. Use a 120-second end-to-end deadline including preparation/checks. The former five-second live first-token goal is retired for launch. |
 | Memory | Compact scene state, commitments, and reader-established facts approximately every 12 completed replies and before needed history eviction. Keep each compaction within the global spend ledger. |
 
 Budgets are maximum allocations, not instructions to pad prompts. Carry fewer recent messages when necessary. Never remove system constraints to fit history. Keep a deterministic fallback using the last valid memory and recent turns if compaction fails. If important evicted state cannot be retained, use the existing transcript for an explicit checkpoint/restart rather than silently pretending complete recall.
+
+The 2,000-token story/system allocation is a starting configuration, not evidence that every character's voice fits. Test short versus richer spoiler-scoped voice packets by reallocating the 8,000-token input budget first. If evaluation needs a larger total, remeasure GPU/KV-cache capacity, latency, and margin before changing the launch allowance economics. Verify that the actual RVN artifact supports the configured context; do not infer its capacity from a filename.
 
 ### Persistence and accounting
 
 Use separate users, sessions/account links, subscriptions/entitlements, billing events, playthroughs, ordered messages, summaries/memory facts, generation requests, usage/cost ledger entries, content versions, and maintenance jobs. Constraints and transactions enforce ownership, nonnegative allowances, stable ordering, and idempotency. Use PostgreSQL in development too, with versioned additive migrations.
 
-Reserve a reply allowance and estimated cost atomically before dispatch. Finalize allowance consumption only for a completed response that is durably saved and available to the reader. Transport disconnects do not create new generations: persist completion and reconnect using the original request ID. Failed or incomplete generations consume no reply allowance, but provider costs still count toward spending limits. Limit repeated user cancellations to five per day before temporarily disabling cancellation-driven resends.
+Reserve a reply allowance and estimated cost atomically before dispatch after input eligibility checks. Finalize allowance consumption only for a completed, safety-approved response that is durably saved and available to the reader. Transport disconnects do not create new generations: persist approved completion and reconnect using the original request ID. Failed, blocked, or incomplete generations consume no reply allowance, but provider/guard costs still count toward spending limits. Limit repeated user cancellations to five per day before temporarily disabling cancellation-driven resends.
 
 Retry only when the provider confirms no generation was accepted, or supports a documented idempotent retry. Do not blindly resend ambiguous timeout requests or stream a partial response and then silently replace it with a second answer. A reader-requested regenerate creates a new request and consumes one reply on success.
 
@@ -212,8 +247,8 @@ During initial setup, establish a standing automation workflow for scoped commit
 
 Use automated checks at milestone boundaries, not a chain of owner approval meetings.
 
-1. **Supply source and prove dependencies:** choose the first story, extract one scene, verify billing/content eligibility and managed hosting quotes, and run the bounded three-model evaluation. Real-account onboarding and any unsupported business eligibility are the limited owner interventions.
-2. **Build the revenue slice:** email login, one scene in both modes, durable streaming generation, memory, reply/cost ledgers, hosted checkout, and cancellation. Use payment test mode until validation passes.
+1. **Supply source and prove dependencies:** identify the exact writing checkpoint/file/settings, choose the first story, extract one scene/voice packet, verify adult-offering billing eligibility and hosting quotes, then validate the vLLM quantization/APC/context/hardware/cost through the later RunPod MCP environment. Real-account onboarding and material incompatibilities are the limited owner interventions.
+2. **Build the revenue slice:** email login, one scene in both modes, durable generation with pre-dispatch defenses and full-response safety review, memory, reply/cost ledgers, eligible hosted checkout, and cancellation. Use payment test mode until validation passes.
 3. **Complete the paid pilot:** load the launch catalog, implement retention/export, monitoring, automatic release/rollback, and restore check. Open to the first 25 paying readers from existing channels; cap enrollments rather than overload support.
 4. **Expand automatically when healthy:** after two weeks, open enrollment if error/latency/cost targets pass, no billing/data-loss defect remains unresolved, and the support workload is manageable. Notify the owner; routine expansion within the spend policy needs no separate approval.
 
@@ -222,7 +257,8 @@ Use automated checks at milestone boundaries, not a chain of owner approval meet
 - Billing sandbox proves checkout, renewal, duplicate/out-of-order events, upgrade/downgrade, cancellation, grace period, and refund handling.
 - Quota/cost tests prove one account cannot overspend through concurrent sends, retries, stream disconnects, or background jobs. Run a 10-concurrent-reader load test within the test budget; start with an application-wide cap of ten simultaneous generations, two of them at most previews, and wait up to ten seconds before returning a no-charge busy response.
 - Thirty fixed narrative cases span both modes: voice, user agency, continuity, spoiler scope, contradictory requests, and long sessions. Agent scoring must reach at least 90% acceptable with no observed spoiler-boundary or reader-agency violation in the critical subset. This finite test is a regression signal, not proof that failures are impossible.
-- Fully loaded inference is at or below $0.002/reply over representative sessions, and latency meets the selected targets. Automatic scoring/evaluation spend is included in the test budget.
+- Separate maintained safety and injection suites each contain at least 24 fixtures, including allowed near-neighbors, multi-turn/memory attacks, adult opt-in, and self-harm support. Critical cases require no observed prohibited-output release or privilege/scope escape; no averaging them into the prose score. Verify checks occur before any text is exposed and continue to apply on resume.
+- Measure RVN's fully loaded cost per delivered safe reply at sparse/busy traffic and APC off/on, including startup/idle/storage, failures, blocked candidates, memory, and moderation. Validate the $0.002 target or revise the unsold offer/budget explicitly. Prove reviewed-response latency and disclose/resolve cold preparation delays. Automatic scoring/evaluation spend is included in the test budget.
 - A backup restore, failed-release rollback, account deletion, and reading/exporting history after subscription lapse have been demonstrated.
 - Owner provides a one-time voice spot-check of ten sample responses against their own story; subsequent routine regressions use those fixtures and automated comparisons. This is creative calibration, not a recurring release gate.
 
