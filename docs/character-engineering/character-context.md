@@ -10,6 +10,8 @@ A believable character has a stable voice and motives, limited knowledge, plausi
 
 RVN is the preferred model family because the owner writes with it. A vLLM-compatible quantization of the **same checkpoint** is permitted after comparison to the Q4_K_M writing reference; quantization equivalence is not assumed. The published text is the style target, not every unedited generation produced during writing.
 
+The exact reference is `RVN-Q4_K_M-multilingual.gguf` from the 27B GGUF repository. The [authoring guide](../authoring/README.md) records its publisher checksum and a personal llama.cpp serverless workflow for project work, NSFW chapter processing, and candidate character assets. Using the writing model may help voice selection, but it does not give a fresh session memory of the story or replace cited extraction and independent validation below. Draft-derived candidates remain outside published runtime bundles until their source is published and designated for this product.
+
 ## 2. Content-production workflow
 
 1. **Ingest designated published sources.** Record story ID, chapter ID, publication/content version, stable passage references, source hash, and publication/access status. Do not index drafts, future chapters, or other stories just because they are present in a directory.

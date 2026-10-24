@@ -8,7 +8,7 @@ The goal is a profitable, immersive experience readers return to, with AI-assist
 
 **Planning and documentation.** This repository does not yet contain a runnable application, dependency manifest, migrations, deployed inference worker, or implemented safety controls. There are no installation or test commands yet.
 
-The product and operating defaults have been selected. Model identity, deployment compatibility, provider eligibility, and real unit economics still require validation. Documentation distinguishes selected policies from implemented or tested behavior.
+The product and operating defaults have been selected. The owner has identified the RVN 27B multilingual Q4_K_M writing file; runtime/settings, deployment compatibility, provider eligibility, and real unit economics still require validation. Documentation distinguishes selected policies from implemented or tested behavior.
 
 ## Product direction
 
@@ -33,7 +33,7 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 - Deterministic pre-dispatch controls, independent input/output safety checks, and complete-response review before reader-visible delivery at launch.
 - Agent-assisted story asset production, routine releases, backups, maintenance, and business/operations reporting.
 
-**Inference remains a validation task:** defer Flash-Next and begin with same-checkpoint RVN 27B Q2/Q3 variants against the Q4_K_M writing reference. Prefer the smallest variant with acceptable author-reviewed quality that passes the independent serving/safety checks. The vLLM GGUF path must demonstrate working, per-account-isolated prefix caching; loading alone is insufficient. Exact artifact identity, our context budget, and serverless economics still require validation. Read the [verification record](docs/planning/inference-verification.md) before provisioning.
+**Inference remains a validation task:** defer Flash-Next and begin with same-checkpoint RVN 27B Q2/Q3 variants against the confirmed multilingual Q4_K_M writing reference. Prefer the smallest variant with acceptable author-reviewed quality that passes the independent serving/safety checks. The vLLM GGUF path must demonstrate working, per-account-isolated prefix caching; loading alone is insufficient. Parent-revision lineage, our context budget, and serverless economics still require validation. Read the [verification record](docs/planning/inference-verification.md) before provisioning.
 
 ## Documentation
 
@@ -42,6 +42,7 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 | [Project overview](docs/planning/project-overview.md) | Commercial offer, reader experience, architecture, budgets, operating policies, and launch sequence. |
 | [Decision record and remaining work](docs/planning/project-decisions.md) | Selected defaults, rationale, owner inputs, and executable implementation tasks. |
 | [RVN/vLLM verification](docs/planning/inference-verification.md) | Dated primary-source research, artifact/runtime findings, cache limitations, and required deployment tests. |
+| [RVN authoring and content preparation](docs/authoring/README.md) | Exact writing model, personal llama.cpp serverless plan, NSFW chapter processing, cited character assets, and future publishing tools. |
 | [Character engineering](docs/character-engineering/README.md) | Index and maintenance conventions for believable, consistent characters. |
 | [Character/context production](docs/character-engineering/character-context.md) | Voice packets, source grounding, modes, knowledge boundaries, prompt layout, memory, and evaluation. |
 | [Content/safety policy](docs/character-engineering/content-safety.md) | Adult-content eligibility, selected boundaries, self-harm support, guards, and reviewed delivery. |
@@ -51,7 +52,7 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 
 ## Next work
 
-1. Identify the exact RVN writing artifact, parent checkpoint, template, and sampling settings; designate the first story source.
+1. Complete the confirmed RVN writing file's parent-revision/runtime/template/settings record; designate the first story source.
 2. Use the later RunPod-MCP-enabled environment to validate a compatible vLLM worker, quantization, actual prefix caching, context capacity, hardware, and itemized cost.
 3. Build one end-to-end revenue slice with both modes, reviewed generation, memory, usage accounting, and eligible test-mode billing.
 4. Validate narrative quality, safety/injection boundaries, economics, and recovery before opening the small paid pilot.
