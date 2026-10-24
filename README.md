@@ -10,6 +10,8 @@ The goal is a profitable, immersive experience readers return to, with AI-assist
 
 The product and operating defaults have been selected. The owner has identified the RVN 27B multilingual Q4_K_M writing file; runtime/settings, deployment compatibility, provider eligibility, and real unit economics still require validation. Documentation distinguishes selected policies from implemented or tested behavior.
 
+**RunPod discovery update:** Authenticated read-only MCP research is recorded in the [discovery report](docs/planning/runpod-discovery.md). It confirms Serverless hardware/configuration and global-volume options, and recovers a stopped Pod's settings with a model-filename discrepancy. No deployment benchmark has passed.
+
 ## Product direction
 
 - Start with one published story, up to two characters, and three scene entry points.
@@ -42,6 +44,7 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 | [Project overview](docs/planning/project-overview.md) | Commercial offer, reader experience, architecture, budgets, operating policies, and launch sequence. |
 | [Decision record and remaining work](docs/planning/project-decisions.md) | Selected defaults, rationale, owner inputs, and executable implementation tasks. |
 | [RVN/vLLM verification](docs/planning/inference-verification.md) | Dated primary-source research, artifact/runtime findings, cache limitations, and required deployment tests. |
+| [Live RunPod discovery](docs/planning/runpod-discovery.md) | MCP catalog/schema evidence, recovered Pod settings, storage/worker findings, provider blockers, and unresolved runtime questions. |
 | [RVN authoring and content preparation](docs/authoring/README.md) | Exact writing model, personal llama.cpp serverless plan, NSFW chapter processing, cited character assets, and future publishing tools. |
 | [Character engineering](docs/character-engineering/README.md) | Index and maintenance conventions for believable, consistent characters. |
 | [Character/context production](docs/character-engineering/character-context.md) | Voice packets, source grounding, modes, knowledge boundaries, prompt layout, memory, and evaluation. |
@@ -53,7 +56,7 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 ## Next work
 
 1. Complete the confirmed RVN writing file's parent-revision/runtime/template/settings record; designate the first story source.
-2. Use the later RunPod-MCP-enabled environment to validate a compatible vLLM worker, quantization, actual prefix caching, context capacity, hardware, and itemized cost.
+2. Use the connected RunPod MCP environment to validate a pinned compatible worker, quantization, actual prefix caching, context capacity, and complete itemized cost.
 3. Build one end-to-end revenue slice with both modes, reviewed generation, memory, usage accounting, and eligible test-mode billing.
 4. Validate narrative quality, safety/injection boundaries, economics, and recovery before opening the small paid pilot.
 
