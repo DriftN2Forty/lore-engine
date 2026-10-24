@@ -33,7 +33,7 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 - Deterministic pre-dispatch controls, independent input/output safety checks, and complete-response review before reader-visible delivery at launch.
 - Agent-assisted story asset production, routine releases, backups, maintenance, and business/operations reporting.
 
-**Inference remains a validation task:** a public Flash-Next RVN NVFP4 companion has publisher-reported custom vLLM execution, but the documented profile does not prove prefix caching, our context budget, or low-cost serverless deployment. It is also a large model. Do not infer fit or cost from the word “quantized.” Read the [verification record](docs/planning/inference-verification.md) before provisioning.
+**Inference remains a validation task:** defer Flash-Next and begin with same-checkpoint RVN 27B Q2/Q3 variants against the Q4_K_M writing reference. Prefer the smallest variant with acceptable author-reviewed quality that passes the independent serving/safety checks. The vLLM GGUF path must demonstrate working, per-account-isolated prefix caching; loading alone is insufficient. Exact artifact identity, our context budget, and serverless economics still require validation. Read the [verification record](docs/planning/inference-verification.md) before provisioning.
 
 ## Documentation
 
