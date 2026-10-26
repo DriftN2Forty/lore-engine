@@ -16,8 +16,6 @@ This is currently a **documentation-only repository**. Do not assume a framework
 
 Read the applicable detailed guidance before changing narrative behavior, content processing, model serving, safety, or trust boundaries. Do not repeatedly load unrelated documents for a narrowly scoped edit.
 
-The original [Gemini summary](docs/planning/gemini-conversation.md) is historical reference. Its code, schemas, configuration values, anonymity claims, and caching guarantees are not approved implementation requirements. Preserve it as source history rather than rewriting it to match later decisions.
-
 If current documents conflict, follow the owner's latest explicit instruction and update the affected specifications together. Surface a concrete unresolved contradiction instead of silently choosing an outdated recommendation.
 
 ## Work autonomously within scope

@@ -2,7 +2,6 @@
 
 **Status:** Selected launch plan, revised October 23, 2026 under the owner's delegation to make practical decisions. These are planning decisions, not claims that anything has been implemented or commercially validated.  
 **Decision record and remaining work:** [project-decisions.md](project-decisions.md).  
-**Historical source:** [Gemini summary](gemini-conversation.md); its example code is discarded.
 
 **Inference clarification:** Target **RunPod Serverless + vLLM + a compatible quantization of the owner's RVN checkpoint**, with Q4_K_M as the writing/style reference, not a mandatory serving format. **Defer Flash-Next; initially compare RVN 27B Q2/Q3 variants and prefer the smallest with acceptable author-reviewed quality that passes the independent technical checks.** GGUF serving must demonstrate actual per-account-isolated prefix caching. Public research does not yet prove this combination, our context capacity, or economics; see [inference verification](inference-verification.md). The owner has identified `RVN-Q4_K_M-multilingual.gguf` from the 27B GGUF repository; runtime/settings and parent-revision lineage remain to be completed.
 

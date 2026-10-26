@@ -52,7 +52,6 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 | [Content/safety policy](docs/character-engineering/content-safety.md) | Adult-content eligibility, selected boundaries, self-harm support, guards, and reviewed delivery. |
 | [Prompt-injection defense](docs/character-engineering/prompt-injection.md) | Deterministic trust boundaries, context instructions, memory/source attacks, and adversarial testing. |
 | [Agent instructions](AGENTS.md) | Repository working conventions and automation boundaries. |
-| [Original Gemini summary](docs/planning/gemini-conversation.md) | Historical input only; its code examples are not an implementation specification. |
 
 ## Next work
 

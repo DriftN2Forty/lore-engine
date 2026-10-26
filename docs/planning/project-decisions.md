@@ -2,7 +2,6 @@
 
 **Revised:** October 23, 2026.  
 **Current plan:** [project-overview.md](project-overview.md).  
-**Historical source:** [gemini-conversation.md](gemini-conversation.md).
 
 ## 1. Decision policy
 
@@ -177,46 +176,7 @@ These are inputs and implementation tasks, **not decisions waiting for repeated 
 - [ ] **T11 — Implement and maintain character-engineering controls.** Turn the [new guidance](../character-engineering/README.md) into versioned assets/prompt fragments and code: source/voice/memory schemas, adult settings/age metadata, self-harm support routes, benchmarked independent guard, full-output review, role/token/scope defenses, safe renderer, and separate 24-case safety and 24-case injection suites. Add allowed counterexamples, policy-version telemetry, and weekly bounded regression maintenance; no ordinary private transcripts in reports.
 - [ ] **T12 — Validate the personal RVN authoring workflow.** Initial stopped-Pod and catalog/schema/storage/Hub inspection is complete; follow the [remaining authoring checklist](../authoring/README.md#implementation-and-evidence-checklist) after resolving T02. Compare the inspected llama.cpp queue/OpenAI facade with native load balancing, preserving the exact multilingual file and testing context explicitly rather than assuming old 128K fits 24 GB. Prove authenticated OpenCode/tool compatibility, cold-start recovery, correct scaler plus 300-second idle shutdown, seven-day dormancy recovery, selected-file storage and actual costs. Quote global storage fully if chosen. Evaluate cited extraction independently and scope future tools/derivative release/rollback separately from author-authorized new canon. No authoring endpoint or tools were provisioned by this research.
 
-## 7. Historical Gemini suggestion evaluation
-
-This preserves coverage of the original suggestions. **The decisions above supersede initial provisional recommendations**, including the old one-mode/Fansly-first direction and the later exact-GGUF/llama.cpp production preference. The initial managed-hosting selection recorded in this historical table has since been superseded by D09 and the [VPS setup plan](vps-setup.md). Source line ranges refer to `gemini-conversation.md`. Public quantization/compatibility findings were researched in [the dated verification record](inference-verification.md); no actual RunPod deployment has been reproduced.
-
-| Source lines | Suggestion | Disposition under the selected plan | Decisions |
-| --- | --- | --- | --- |
-| 1–4 | LoreEngine/private monolith, local PostgreSQL, remote inference | Keep modular monolith, planned VPS application hosting, and RunPod Serverless inference. Privacy is an explicit data policy, not anonymity marketing. | D01, D08–D09, D17 |
-| 4, 21–26, 52–60, 196–200 | Fansly OAuth2/session validation/tier webhooks | Unverified and removed from critical path. Use independent accounts and supported subscription billing; do not fabricate a platform integration. | D04–D05 |
-| 8–38 | Exact directory scaffold | Discard example structure/code; preserve responsibility boundaries in a single typed application. | D07, D10–D13 |
-| 12–14 | `.github/deploy-keys/` credential directory | Reject private keys in source control; use managed secrets/scoped automation identities. | D20 |
-| 14–16, 135–153 | OpenCode-specific local deploy script/path | Discard unverified path and ad hoc SSH workflow. Establish supported agent/release tools during implementation without requiring this layout. | D19–D20 |
-| 18–23, 37 | Database pool, provider client, auth/rate-limit modules, `.env.example` | Keep the responsibilities, not sample implementations. Distinguish quotas, throttling, and cost reservations; examples contain placeholders only. | D06, D10, D17, D20 |
-| 25–27 | Login callback, webhook, chat route | Implement supported login/billing events plus durable generation contracts; route names are not architecture requirements. | D04–D07, D12 |
-| 28–34 | Character/chapter JSON and canon/what-if files | Keep validated versioned assets; private session consequences do not require manually authored files for every possible alternate timeline. | D03, D11 |
-| 35 | Dockerfile baking AWQ weights into a worker | Choose a reproducible compatible RVN worker; compare model-in-image versus supported persistent-cache/download paths for actual cold-start cost. Q4_K_M is not assumed AWQ. | D17–D18, T10 |
-| 36, 38 | Deployment shell script and Node package manifest | Node/TypeScript selected, but use reproducible managed release tooling rather than copying the script. | D10, D19 |
-| 44–50 | Anonymous PostgreSQL, UUID extension, tier enum | Reject anonymity claim; use managed PostgreSQL, application UUIDs, and configurable plans. No extension/enum requirement inherited from the snippet. | D05, D08, D13 |
-| 52–62 | Fansly-only users, required username, tier column, 50 messages, timestamps, duplicate ID index | Replace with local accounts, synchronized entitlements and ledgers. Trial is 20 lifetime replies. Define constraints/expiry explicitly; do not duplicate a unique index. | D04–D06, D13 |
-| 64–74 | One progress row/user/character, chapter/timeline/mode | Keep state concepts, replace row ownership with explicit playthroughs and stable IDs. Modes/chapters are scoped per playthrough, not mutable global state. | D02–D03, D12 |
-| 76–84 | “Stateless” JSONB chat array optimized for prefix caching | Reject premise. Durable history is stateful; ordered messages plus compact memory support concurrency. JSONB remains suitable for metadata, not indefinite shared-array rewrites. | D12–D13, D16 |
-| 90–98 | Payload compiler, dynamic chapter-file `require` | Keep deterministic context compilation with validated lookups, pinned asset versions, and no arbitrary request-derived paths. | D11, D14 |
-| 99–105 | Companion versus mirror-protagonist prompts | Keep both modes with clear reader/model agency, separate instructions, and shared narrative assets. | D02, D14 |
-| 107–122 | System block with profile, voice, setting, condition, constraints | Keep the useful content categories; fit enforced budgets and the selected model template. Authoritative state remains application-owned. | D11, D14–D15 |
-| 113–121 | Absolute canon, never disclose constraints/apologize, no future spoilers | Reject guarantees and rigid plot railroading. Private what-ifs permit agency; chapter-bounded facts and evaluated behavior reduce spoiler/voice failures. | D03, D14 |
-| 91–93, 124–129 | Universal ChatML array and 100% indefinitely free cached prefix | Reject guarantees. Provider adapter supplies actual API/template contract; cache is optional and absent from baseline cost savings. | D16–D17 |
-| 127–129 | Append all history without bound | Replace with 8K input budget, recent turns, compact memory, and separately persisted transcript. | D12, D15 |
-| 135–147 | Stage everything, auto-commit/push `main` while deploying | Reject blind staging and mutable releases. Deliberate standing automation may create scoped tested commits and deployments; this differs from making deployment blindly mutate history. | D19–D20 |
-| 148–153 | SSH key, `accept-new`, admin account, hidden VPS, success message | VPS hosting is now intended, but SSH policy and the deployment mechanism remain to be designed. Verify hosts and scope credentials; do not claim anonymity or health from a shell success message. | D08–D09, D19–D20 |
-| 158–169 | `git pull`, mutable dependency install, interchangeable Node/Python commands | Reject snippet. Use one runtime, lockfile builds, immutable releases, explicit migrations, and failure handling. | D10, D13, D19 |
-| 171–175 | PM2 restart as isolation/clean swap/proof of health | Not selected; use managed supervision, actual health/synthetic checks, and rollback. PM2 itself is not an isolation boundary or availability proof. | D09, D19, D21 |
-| 181–187 | Latest/community worker image, exact model repository, AWQ | Target RunPod/vLLM. Public NVFP4 companion has custom-vLLM execution evidence but no APC/long-context proof and is not the now-identified 27B multilingual writing file. Do not infer AWQ or stock-image compatibility. | D17–D18, T10 |
-| 184 | `ADA_24` groups L4/4090/3090 | Unverified; do not inherit this pool assumption. Later RunPod MCP verification checks actual offerings/availability. | D18, T10 |
-| 186 | `HF_HOME` automatically creates/mounts a global volume | Reject guarantee. It selects a cache path; provisioning, attachment, mount access, region support, and storage cost are separate. | D18, T10 |
-| 187 | AWQ/prefix-cache flags and 32,768-token model length | Conditional engine settings, not chosen launch defaults. Verify actual quantized RVN context/engine support; begin with enforced 8K input/600-token paid output and evaluate voice-context needs. | D15–D18 |
-| 187 | Disable inference request logs | Keep privacy goal, not reliance on one flag. Cover application/proxy/provider logs and retain content-free operational signals. | D08, D21 |
-| 189–191 | Zero minimum, ten maximum GPU workers | Zero-to-one workers is the initial bounded test, not ten. Set production warm/scaling behavior from latency and full GPU/storage cost measurements. Worker count alone never defines a spend cap. | D06, D18 |
-| 192 | Two-second queue delay guarantees batching/cache sharing | Reject guarantee. Queue policy is not worker routing or cache affinity; benchmark later if needed. Initial app queue is a separate bounded admission policy. | D16, D18 |
-| 196–200 | Immediately scaffold SQLite/PostgreSQL and Express/FastAPI alternatives with placeholders | Discard ambiguous initialization prompt. Implement chosen stack and one revenue slice while validating actual dependencies. PostgreSQL parity, tested integrations, and real secret handling replace placeholders as evidence. | D10, D13, D20, D22 |
-
-## 8. Changes from the first draft
+## 7. Changes from the initial plan
 
 - Revenue, returning-reader value, and owner time are now the explicit optimization criteria.
 - Product/operational choices are resolved; validation tasks no longer masquerade as owner approval gates.
