@@ -29,7 +29,7 @@ Reader → TypeScript / Next.js application → RunPod Serverless
                        └→ PostgreSQL
 ```
 
-- Modular monolith with managed application/database hosting and independently automated billing entitlements.
+- Modular monolith planned for a rented VPS application host, with database placement to be decided and billing entitlements automated independently.
 - RunPod Serverless with vLLM and a compatible quantization of the author's RVN checkpoint. The author's Q4_K_M writing model is the style reference, not a mandatory production file format.
 - Bounded context, durable playthrough/message storage, memory compaction, and atomic reply/cost accounting.
 - Deterministic pre-dispatch controls, independent input/output safety checks, and complete-response review before reader-visible delivery at launch.
@@ -45,6 +45,7 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 | [Decision record and remaining work](docs/planning/project-decisions.md) | Selected defaults, rationale, owner inputs, and executable implementation tasks. |
 | [RVN/vLLM verification](docs/planning/inference-verification.md) | Dated primary-source research, artifact/runtime findings, cache limitations, and required deployment tests. |
 | [Live RunPod discovery](docs/planning/runpod-discovery.md) | MCP catalog/schema evidence, recovered Pod settings, storage/worker findings, provider blockers, and unresolved runtime questions. |
+| [VPS setup and Cloudflare plan](docs/planning/vps-setup.md) | Future WSL-to-VPS deployment details, Cloudflare routing choices, operational capture fields, and acceptance checks. |
 | [RVN authoring and content preparation](docs/authoring/README.md) | Exact writing model, personal llama.cpp serverless plan, NSFW chapter processing, cited character assets, and future publishing tools. |
 | [Character engineering](docs/character-engineering/README.md) | Index and maintenance conventions for believable, consistent characters. |
 | [Character/context production](docs/character-engineering/character-context.md) | Voice packets, source grounding, modes, knowledge boundaries, prompt layout, memory, and evaluation. |
