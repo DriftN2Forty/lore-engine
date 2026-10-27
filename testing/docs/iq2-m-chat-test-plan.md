@@ -14,7 +14,7 @@ Build a small local web app to load a chapter-bounded story state and let the au
 - **Runtime:** `D:\AI\llama.cpp\llama-b11046-bin-win-vulkan-x64\llama-server.exe`.
 - **Model:** `%USERPROFILE%\.lmstudio\models\0bserverx\RVN-IQ2_M\RVN-IQ2_M.gguf`.
 - **API/model alias:** `http://127.0.0.1:8080/v1`, `rvn-iq2m-base`.
-- **Launch flags:** `--host 127.0.0.1 --port 8080 -c 8192 -np 1 -ngl 99 --jinja`; Vulkan binary. Runtime reports one 8192-token slot; one near-limit request passed. This does not establish long-session or concurrency quality.
+- **Launch flags:** `--host 127.0.0.1 --port 8080 -c 16384 -np 1 -ngl 99 --jinja`; Vulkan binary. The owner-requested October 27 follow-up raised the original 8192-token slot to 16,384; one near-limit request passed at each size. The launcher retains its historical `8192` filename. See [current capacity evidence](live-model-evidence.md#16k-context-follow-up--october-27-2026). This does not establish long-session or concurrency quality.
 
 The base filename matches the cloud canary's filename, but this does not establish artifact identity or a same-checkpoint relationship with the multilingual writing reference. The actual local hash is recorded in [live evidence](live-model-evidence.md); source revision/lineage and writing-reference equivalence remain unverified. Windows loopback works; WSL-to-Windows loopback failed during testing, so use the Windows app launcher for the current setup.
 
@@ -42,7 +42,7 @@ Assemble each request in this order:
 3. Validated private scene memory, separate from canonical facts.
 4. Recent completed user/assistant exchanges, then the current user message.
 
-Count tokens with the actual template/tokenizer, reserve output space, and reject overflow rather than silently lose rules or story anchors. The supplied launcher requests **8,192 total context tokens**; verify effective per-slot capacity on the running server. This must fit templated input plus the output reservation, so the planned 8,000-token application input budget plus 600 output tokens will not fit. Reduce recent history first while preserving required rules and story anchors. The earlier cloud canary used 4,096 total context tokens.
+Count tokens with the actual template/tokenizer, reserve output space, and reject overflow rather than silently lose rules or story anchors. The supplied launcher now requests **16,384 total context tokens**; verify effective per-slot capacity on the running server. This must fit templated input plus the output reservation, leaving at most 15,784 input tokens with the default 600-token output reservation. Reduce recent history first while preserving required rules and story anchors. The earlier 8192-token local setup could not fit 8,000 input plus 600 output tokens; the earlier cloud canary used 4,096 total context tokens.
 
 ## Context and cache panel
 

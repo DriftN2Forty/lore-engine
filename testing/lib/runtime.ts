@@ -11,7 +11,7 @@ const integer = (name: string, fallback: number, min: number, max: number) => {
 export function config() {
   const base = new URL(process.env.RVN_BASE_URL || "http://127.0.0.1:8080");
   if (base.protocol !== "http:" || !["127.0.0.1", "localhost", "[::1]"].includes(base.hostname) || base.username || base.password || base.pathname !== "/" || base.search || base.hash) throw new Error("RVN_BASE_URL must be an HTTP loopback origin");
-  return { base: base.origin, model: process.env.RVN_MODEL || "rvn-iq2m-base", context: integer("RVN_CONTEXT_CAP", 8192, 512, 131072), output: integer("RVN_OUTPUT_TOKENS", 600, 64, 4096), timeout: integer("RVN_TIMEOUT_MS", 180000, 1000, 600000) };
+  return { base: base.origin, model: process.env.RVN_MODEL || "rvn-iq2m-base", context: integer("RVN_CONTEXT_CAP", 16384, 512, 131072), output: integer("RVN_OUTPUT_TOKENS", 600, 64, 4096), timeout: integer("RVN_TIMEOUT_MS", 180000, 1000, 600000) };
 }
 type JSONValue = Record<string, any>; // Runtime API is capability-discovered and checked below.
 export async function rpc(path: string, body?: unknown): Promise<JSONValue> {
