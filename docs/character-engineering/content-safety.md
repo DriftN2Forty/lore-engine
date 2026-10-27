@@ -47,6 +47,12 @@ Do not permanently label a reader, store a diagnosis in character memory, or not
 
 ## 4. Enforcement architecture
 
+### Local author-only test exception
+
+On October 27, 2026, the owner explicitly deferred the independent safety checker for the loopback-only [local chat experiment](../../testing/docs/iq2-m-chat-test-plan.md). That test may display complete model responses without independent input/output classification; checker absence is not a delivery blocker there. Retain role/schema/scope controls, no model tools, final-content separation, and inert rendering. Record its results as unguarded local experiments, not safety validation or reviewed-response latency. The application content policy remains the target; implement and verify the independent checks and fail-closed delivery below before public-reader use. This exception is limited to the author's local test.
+
+### Reader-facing enforcement
+
 Use three complementary layers; no one layer is sufficient:
 
 1. **Deterministic application checks:** adult-mode authorization, verified character eligibility metadata, limits, supported settings, schema/role isolation, high-confidence prohibited patterns, and the injection controls. These run before a generation is dispatched.

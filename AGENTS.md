@@ -4,7 +4,7 @@
 
 LoreEngine monetizes the author's published stories through immersive character conversations and protagonist-controlled private scenes. Prioritize returning-reader value, subscription contribution profit, and low owner maintenance time.
 
-This is currently a **documentation-only repository**. Do not assume a framework, database, worker, safety control, deployment, or test suite already exists. The selected stack and policies are plans until implemented and verified. Do not scaffold application code merely because a documentation task mentions it.
+This repository contains product specifications and an **author-only local Next.js test harness in `testing/`**. See `testing/docs/README.md` for its actual setup/check commands and local safety exception. Do not assume a production database, worker, safety control or deployment exists. Selected production policies remain plans until implemented and verified. Do not scaffold application code merely because a documentation task mentions it.
 
 ## Read the relevant specifications
 
@@ -35,7 +35,7 @@ If current documents conflict, follow the owner's latest explicit instruction an
 - Match the actual writing artifact and parent revision before choosing hardware. The public NVFP4 finding does not establish identity with the owner's model, stock-image compatibility, long-context capacity, or a cheap single-GPU fit.
 - Use the later RunPod-MCP-enabled environment for live offering/configuration checks and bounded deployment tests. Public documentation inspection is not a reproduced runtime benchmark.
 - Pin artifact, runtime/image, tokenizer/template, and relevant settings. Record evidence date and provenance. Distinguish publisher-reported measurements from local results.
-- Caching is an optional optimization, not a required engine or launch feature. If enabled, measure its effect and preserve account/data-scope isolation; never trade private-data isolation or safety for cache hits. Test warm/cold behavior, actual concurrency, and total billed costs.
+- Prefer shared-prefix caching for identical authorized token prefixes across accounts when measured beneficial; it remains an optional optimization, not a required engine or launch feature. Do not impose blanket per-account/playthrough salts or duplicate prefixes solely by owner. Enforce account/playthrough data selection, source scope and response attribution independently of engine cache matching; cache similarity grants no access. Test divergent state, A→B→A and compaction switching, cold/warm behavior, retention/eviction, GPU/host memory, restoration latency, fairness, timing/membership exposure, actual concurrency and total billed costs under the overview's shared-prefix cache policy. Never include foreign history or weaken required safety/access controls for hits.
 - Follow the current budgets in the overview; do not duplicate mutable financial limits throughout the repository. Estimate charges before paid tests, including large model storage/loading, GPU startup/idle time, guards, and failures.
 
 ## Character, safety, and security requirements

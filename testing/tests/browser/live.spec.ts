@@ -1,0 +1,24 @@
+import { test, expect } from "@playwright/test";
+test("real local model reply, metrics, checkpoint resume and reset through the web app", async ({ page }) => {
+  test.skip(process.env.LORE_LIVE_UI !== "1", "Opt-in real local inference: set LORE_LIVE_UI=1");
+  test.setTimeout(180000);
+  await page.goto("/");
+  await page.getByRole("button", { name: "Load synthetic chapter" }).click();
+  await expect(page.getByLabel("Mode", { exact: true })).toBeEnabled();
+  await page.getByLabel("Mode", { exact: true }).selectOption("talk_to_character");
+  await expect(page.getByLabel("Character", { exact: true })).toBeEnabled();
+  await page.getByLabel("Character", { exact: true }).selectOption("ivo");
+  await page.getByLabel("Your dialogue or action").fill("I ask, 'How is the weather?' Reply in at most two short sentences, without deciding my words or actions.");
+  await page.getByRole("button", { name: "Send", exact: true }).click();
+  await expect(page.locator("article.assistant")).toHaveCount(1, { timeout: 150000 });
+  await expect(page.getByText("Preflight matches usage: true.", { exact: false })).toBeVisible();
+  const content = await page.locator("article.assistant p").innerText();
+  expect(content).not.toMatch(/<\/?think>|<\|im_start\|>/i);
+  const saved = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Save checkpoint" }).click();
+  const path = await (await saved).path(); if (!path) throw new Error("Missing checkpoint");
+  await page.getByLabel("Resume checkpoint").setInputFiles(path);
+  await expect(page.locator("article.assistant p")).toHaveText(content);
+  await page.getByRole("button", { name: "Reset to snapshot" }).click();
+  await expect(page.locator("article")).toHaveCount(0);
+});

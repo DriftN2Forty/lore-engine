@@ -6,7 +6,7 @@ The goal is a profitable, immersive experience readers return to, with AI-assist
 
 ## Project status
 
-**Planning and documentation.** This repository does not yet contain a runnable application, dependency manifest, migrations, production inference worker, or implemented safety controls. One experimental Runpod Serverless GGUF endpoint exists for further testing. There are no installation or test commands yet.
+**Product planning plus a local author-test harness.** The runnable Next.js experiment in [`testing/`](testing/docs/README.md) implements chapter imports, both modes, private checkpoints/memory and local llama.cpp context metrics. Setup and checks are documented there; the current Windows/WSL setup uses `testing/start-local.ps1` so the app can reach the Windows model loopback. Synthetic automated checks, production builds and bounded live base-IQ2_M template/token-count/single-slot checks pass, including one actual memory-summary/recall smoke check. Live thirty-turn continuity and author narrative acceptance remain pending. The local test intentionally defers independent safety classification. Production migrations, inference routing, billing and safety controls remain unimplemented. One experimental Runpod Serverless GGUF endpoint exists for further testing.
 
 The product and operating defaults have been selected. The owner has identified the RVN 27B multilingual Q4_K_M writing file; runtime/settings, deployment compatibility, provider eligibility, and real unit economics still require validation. Documentation distinguishes selected policies from implemented or tested behavior.
 
@@ -35,7 +35,7 @@ Reader → TypeScript / Next.js application/router → local hot llama.cpp worke
 - Deterministic pre-dispatch controls, independent input/output safety checks, and complete-response review before reader-visible delivery at launch.
 - Agent-assisted story asset production, routine releases, backups, maintenance, and business/operations reporting.
 
-**Inference remains a validation task:** compare same-checkpoint RVN quantizations against the confirmed multilingual Q4_K_M writing reference. Prefer a smaller variant only if author-reviewed quality and independent safety checks pass. Validate the local-worker/RunPod-overflow route, artifact lineage, context budget, cold-start behavior, and full economics. Caching is optional; any enabled caching must respect data isolation. Read the [verification record](docs/planning/inference-verification.md) before provisioning.
+**Inference remains a validation task:** compare same-checkpoint RVN quantizations against the confirmed multilingual Q4_K_M writing reference. Prefer a smaller variant only if author-reviewed quality and independent safety checks pass. Validate the local-worker/RunPod-overflow route, artifact lineage, context budget, cold-start behavior, and full economics. Favor [shared-prefix caching](docs/planning/project-overview.md#shared-prefix-cache-policy) where measured beneficial, without blanket account salts; ownership, authorized history and response delivery remain application-enforced. Multi-user cache correctness, timing, memory/eviction and restoration checks are still open. Caching remains optional. Read the [verification record](docs/planning/inference-verification.md) before provisioning.
 
 ## Documentation
 
@@ -57,7 +57,7 @@ Reader → TypeScript / Next.js application/router → local hot llama.cpp worke
 ## Next work
 
 1. Complete the confirmed RVN writing file's parent-revision/runtime/template/settings record; designate the first story source.
-2. Use the connected RunPod MCP environment to validate a pinned compatible worker, quantization, actual prefix caching, context capacity, and complete itemized cost.
+2. Use the connected RunPod MCP environment to validate a pinned compatible worker, quantization, context capacity, optional shared-prefix reuse under multi-user correctness/resource/timing checks, and complete itemized cost.
 3. Build one end-to-end revenue slice with both modes, reviewed generation, memory, usage accounting, and eligible test-mode billing.
 4. Validate narrative quality, safety/injection boundaries, economics, and recovery before opening the small paid pilot.
 

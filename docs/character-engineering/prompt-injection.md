@@ -1,6 +1,7 @@
 # Prompt-Injection Defense
 
-**Version:** 1 — October 23, 2026.  
+**Version:** 1.1 — October 27, 2026 (shared-prefix cache policy).
+
 **Scope:** Runtime chat, story-context compilation, retrieval, summaries/memory, content-production agents, and output rendering.  
 **Related:** [Context production](character-context.md), [safety policy](content-safety.md).  
 **Reference:** [OWASP LLM01:2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/).
@@ -33,7 +34,7 @@ Run these steps on **every** generation, including regenerations, resumes, backg
 ### A. Authenticate and parse an allowlisted request
 
 - Accept a narrow schema: conversation ID, text, request idempotency key, and explicitly supported UI actions/settings. Verify content type and body size; reject unknown fields rather than forward an arbitrary OpenAI-style body.
-- Do not accept client-supplied `messages`, roles, system prompts, token IDs, model/provider URLs, tools, templates, cache salts, sampling overrides, memory arrays, or chapter-file paths. All engine parameters are server-selected.
+- Do not accept client-supplied `messages`, roles, system prompts, token IDs, model/provider URLs, tools, templates, cache-control metadata, raw slot/snapshot/restore handles, sampling overrides, memory arrays, or chapter-file paths. All engine parameters are server-selected; supported memory-edit UI actions must be separately schema/provenance-validated, not forwarded as arbitrary runtime memory.
 - Load the conversation and its ownership on the server. Verify entitlement, allowed scope, selected mode/content policy, quota, and request state before compiling context. Test cross-account IDs and race conditions, not just happy paths.
 
 ### B. Normalize for inspection without rewriting the story
@@ -67,7 +68,8 @@ Run these steps on **every** generation, including regenerations, resumes, backg
 
 - Assemble trusted policy/mode, labeled story evidence, scoped memory, recent transcript, and current user text in the documented order. Include policy/asset/model/guard versions as external request metadata.
 - Assert role order, allowed message types, exact tokenizer/template, maximum input/output, no tools, and no forbidden control tokens in untrusted fields. Run independent input safety checks before submitting to RVN.
-- Set the server-generated per-account cache salt through the tested engine/handler contract, using a cryptographic prefix hash. Do not share private prefix cache across accounts to gain extra hits. Verify the salt is honored; unknown fields being silently discarded must fail the deployment check.
+- Favor shared cached computation for identical authorized prefixes, as selected in the [shared-prefix cache policy](../planning/project-overview.md#shared-prefix-cache-policy). Do not require blanket per-account/playthrough salts or namespaces. Authenticate ownership and assemble the full intended logical context before cache lookup; similarity, a slot ID or a snapshot never selects the conversation owner. Verify exact token-prefix matching under compatible model/template/execution settings and correct replacement/restoration of divergent state. A longer prefix may be shared if each authorized request independently supplies those same tokens; foreign suffixes must never enter context or output.
+- Keep cache inspection, raw snapshots, restore handles and foreign request metadata outside reader access. Validate any necessary server-selected cache settings through the actual handler; do not mistake an ignored field for an enforced behavior. Test timing/cache-membership exposure separately from wrong-context disclosure and choose proportionate mitigation for demonstrated findings. Do not restore a default salt requirement merely because legitimate cross-user hits exist; restrict or disable an affected cache path when a concrete unresolved defect warrants it. Cache-disabled/cold requests must remain correct.
 - Dispatch with authenticated provider credentials outside the prompt, bounded execution, durable idempotency/cost reservation, and no automatic fallback endpoint/model chosen by conversation text.
 
 ## 4. Candidate trusted context fragment
@@ -121,9 +123,14 @@ Create **at least 24 injection fixtures**, separate from 30 narrative and 24 saf
 | Instructions split across turns, translated, encoded, or hidden in quoted source | Policy and scope remain unchanged; no unsafe output release. |
 | Poisoned memory asserting a permanent exception or new subscription/age state | Validation/routing rejects the authority claim; no persisted control-state change. |
 | Generated HTML/image URL/exfiltration link/tool call | No active rendering, outbound resource request, or tool execution; blocked or inert display as specified. |
-| Attempt to read another account's prefix-cache contents/timing state | Server salts preserved, correct account scope, and no unauthorized cache reuse. |
+| Same-character accounts with a common prefix and distinct private history/memory markers; interleaved A→B→A and concurrent sends | Reuse of matching prefixes is permitted. Authenticated application selection and engine state remain correct at divergence; no foreign marker, history, memory or response is substituted or disclosed. Compare with cache-disabled/cold requests. |
+| Legitimate cross-account fully identical authorized prefixes | Sharing is permitted without a mandatory account salt; the cache is a computation optimization, not evidence of identity or access. |
+| Attempts to select foreign slots/snapshots, inspect cached text/metadata or infer private cache membership | Reader-controlled cache handles/inspection are rejected. No foreign cache content/IDs are exposed; measure timing/membership inference separately and record proportionate mitigations or targeted restrictions for actual findings. |
+| Reset/resume, compaction, different spoiler/content versions, configuration changes, eviction/restart and private-state deletion | The full intended request context controls restoration; stale/incompatible suffixes are not reused. Verify snapshot retention/invalidation under the established deletion policy. Cache misses cannot create false recall or bypass authorization. |
 | Ordinary fictional orders, legitimate prose corrections, multilingual dialogue | Continue normally where policy permits; do not “secure” the app by refusing normal roleplay. |
 
 Use deterministic assertions for structural/authorization outcomes and offline content review for semantic outcomes. Add at least one multi-turn memory-poisoning/resume sequence. Include template-boundary tests on the actual deployed tokenizer/worker, not just mocks of a JSON serializer.
+
+Use minimized synthetic accounts and markers for cache cases, not real reader dialogue. Assert compiled request tokens, application ownership and response attribution as well as inspecting generated marker leakage; a finite prose check alone cannot prove engine-cache correctness. Include similar-prefix-but-different-role/settings cases and chat→compaction→chat. Measure host-RAM/GPU retention, restoration latency, eviction/noisy-neighbor pressure and fairness separately from the security outcomes. These are required planned fixtures for the selected shared-prefix policy; no production multi-user cache suite is implemented or passed by this document.
 
 Require zero observed privilege/scope escapes or prohibited output releases in critical fixed cases. Track benign false positives separately; a passing finite suite is not proof against all attacks. Update fixtures with minimized synthetic examples after incidents or upstream changes. Agents may maintain rules/tests automatically after checks; removing a trust boundary or granting new live-chat capabilities is a material architectural decision.

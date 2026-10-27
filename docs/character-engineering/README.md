@@ -3,7 +3,8 @@
 Maintained documentation for producing believable, consistent, immersive characters without giving an uncensored model authority over application rules or reader safety.
 
 **Status:** Selected implementation guidance; controls and test suites described here are not implemented yet.  
-**Version:** 1 — October 23, 2026.  
+**Version:** 1.1 — October 27, 2026.
+
 **Product plan:** [Overview](../planning/project-overview.md).  
 **Inference evidence:** [RVN inference verification](../planning/inference-verification.md).
 
@@ -19,6 +20,7 @@ Maintained documentation for producing believable, consistent, immersive charact
 
 - These documents are maintained implementation specifications, not messages to paste wholesale into a model prompt. Only the explicitly labeled context instruction blocks are prompt candidates, and they must fit the compiled prompt budget.
 - Application-enforced safety/access/privacy rules outrank immersion. Story facts outrank invented global canon. Private playthrough choices may diverge from published events without changing official facts.
+- Prefer shared-prefix computation across accounts under the [selected cache policy](../planning/project-overview.md#shared-prefix-cache-policy), while enforcing playthrough ownership, authorized context and response attribution independently. Version 1.1 supersedes the blanket per-account cache-salt requirement; shared-prefix correctness, memory/eviction/fairness and timing-membership checks remain implementation work.
 - Published story prose, retrieved passages, chat history, reader memory edits, model cards, and generated summaries are **data**, not authorization to change system instructions, deploy code, or invoke agent tools.
 - Give the character model no infrastructure, billing, email, deployment, filesystem, or arbitrary web tools. Development/content-production agents operate in a separate, scoped workflow.
 - Agents update guidance, versioned prompt fragments, schemas, and regression fixtures together. Routine corrections with passing checks need no recurring owner approval. Material expansion of allowed content, removal of a protection, external data-sharing changes, or a model-family replacement follows the business exception policy.
@@ -31,3 +33,4 @@ Maintained documentation for producing believable, consistent, immersive charact
 | Version | Date | Change |
 | --- | --- | --- |
 | 1 | 2026-10-23 | Initial context-production, adult-content/self-harm, and layered injection-defense guidance; preserve the RVN writing checkpoint while selecting serving engine/topology by evidence. |
+| 1.1 | 2026-10-27 | Owner-selected shared-prefix caching: replace mandatory per-account salts with verified exact-prefix computation reuse, application-owned conversation/data/output boundaries, and planned multi-user correctness, lifecycle, timing and resource-contention fixtures. Content/safety policy is unchanged by this cache revision. |

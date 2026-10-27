@@ -1,0 +1,16 @@
+:root { color-scheme: dark; font-family: system-ui, sans-serif; background: #10161c; color: #e4e8e9; }
+* { box-sizing: border-box; } body { margin: 0; } main { max-width: 1380px; padding: 2rem; margin: auto; }
+h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin: .4rem 0 1rem; } h2 { font-size: 1.2rem; }
+p { line-height: 1.6; } .eyebrow { color: #79cfc2; letter-spacing: .18em; font-size: .8rem; }
+.notice { border-left: 3px solid #e8b679; padding: .7rem 1rem; background: #29251e; }
+.toolbar, .selectors { display: flex; gap: .7rem; flex-wrap: wrap; } .columns { display: grid; grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr); gap: 1.2rem; }
+section, details { background: #18222b; border: 1px solid #30404e; border-radius: 10px; padding: 1.2rem; margin-bottom: 1rem; }
+section details { background: #111c24; } summary { cursor: pointer; } .muted { color: #a6b8c4; font-size: .9rem; }
+button, .file, select { border: 1px solid #587482; background: #234147; color: #effafa; border-radius: 6px; padding: .65rem .8rem; cursor: pointer; font: inherit; }
+button:disabled, input:disabled, select:disabled { opacity: .5; cursor: default; } button + button { margin-left: .5rem; }
+.file input { display: block; max-width: 220px; margin-top: .4rem; font-size: .8rem; } label { display: block; font-size: .9rem; } select { display: block; margin-top: .3rem; max-width: 100%; }
+textarea { width: 100%; background: #0e171f; color: #effafa; border: 1px solid #587482; border-radius: 6px; padding: .8rem; font: inherit; line-height: 1.5; margin: .5rem 0; resize: vertical; }
+article { border-left: 3px solid #597784; padding: .7rem 1rem; margin-bottom: 1rem; background: #101a22; } article.user { border-color: #79cfc2; } article p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.transcript { max-height: 65vh; overflow: auto; } .error { color: #ffc0ae; border-left: 3px solid #d47c64; padding-left: .8rem; overflow-wrap: anywhere; } .big { font-size: 1.2rem; color: #79cfc2; }
+dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border-bottom: 1px solid #30404e; } dd { margin: 0; } pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 500px; overflow: auto; font-size: .8rem; }
+@media (max-width: 850px) { main { padding: 1rem; } .columns { grid-template-columns: 1fr; } }

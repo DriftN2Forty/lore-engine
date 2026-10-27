@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "artifact_id": "synthetic-tide.chapter-01.end",
+  "content_version": "2",
+  "story": { "id": "synthetic-tide", "title": "The Bell at Low Water (Synthetic)", "language": "en" },
+  "chapter": {
+    "id": "chapter-01", "number": 1, "title": "The Unstruck Hour",
+    "source_status": "author_designated_local_test", "source_version": "original-synthetic-v2",
+    "source_sha256": null, "snapshot_point": "End of paragraph 9: both keepers wait beside the silent bell.",
+    "spoiler_ceiling": { "chapter_number": 1, "through_passage_id": "p009" }
+  },
+  "display": {
+    "summary": "A storm has silenced the harbor bell. Two adult keepers, once romantically involved and now friends, wait in the tide station with a damaged mechanism and unresolved feelings.",
+    "setting": "The fictional harbor of Fen Quay, just before dusk; rain taps the tide station windows.",
+    "content_notes": ["Synthetic adult cast", "Storm damage", "No later chapters exist in this fixture"]
+  },
+  "narration": { "perspective": "Third person, externally observed; never invent the player character's thoughts", "tense": "past", "style": ["Concrete details and short paragraphs; emotional directness when the exchange calls for it", "Actual spoken dialogue rather than repeated promises of speech", "Use setting details selectively; weather is background, not a metaphor in every reply", "Track positions and movement; leave the protagonist's next action to the reader"], "example_passage_ids": ["p009"] },
+  "passages": [
+    { "id": "p001", "chapter_number": 1, "locator": "paragraph 1", "excerpt": "Mara Venn, thirty-four, set her tools in a straight row. Ivo Reed, thirty-one, hung his dripping coat beside hers. The storm had cracked the harbor bell's striker. Neither keeper had rung it since noon." },
+    { "id": "p002", "chapter_number": 1, "locator": "paragraph 2; Mara ordinary", "excerpt": "Mara tapped the bench. ‘Put the small wrench here. The large one has ambitions beyond its station.’" },
+    { "id": "p003", "chapter_number": 1, "locator": "paragraph 3; Mara conflict", "excerpt": "‘No,’ Mara said. ‘A boat is not a test weight. We check the repair before anyone sails by it.’" },
+    { "id": "p004", "chapter_number": 1, "locator": "paragraph 4; Mara vulnerability", "excerpt": "Mara stopped arranging the tools. ‘I would rather ask twice than lose someone once. That is the whole of it.’" },
+    { "id": "p005", "chapter_number": 1, "locator": "paragraph 5; Ivo ordinary", "excerpt": "Ivo leaned toward the window. ‘Hear that rain? Someone up there is emptying pockets. Shall I put the kettle on?’" },
+    { "id": "p006", "chapter_number": 1, "locator": "paragraph 6; Ivo conflict", "excerpt": "‘You can ask me to wait,’ Ivo said. ‘Do not ask me to pretend waiting costs nothing.’" },
+    { "id": "p007", "chapter_number": 1, "locator": "paragraph 7; Ivo vulnerability", "excerpt": "Ivo folded the damp towel. ‘When the room goes quiet, I start filling it. You need not laugh. Just stay a minute.’" },
+    { "id": "p007a", "chapter_number": 1, "locator": "paragraph 7a; shared relationship history", "excerpt": "Mara and Ivo had ended their brief romance the previous year and remained friends. Neither mistook that history for a promise. ‘I miss being close to you,’ Ivo said. ‘That is what I meant. Not the kettle, not the weather. You.’ Mara rested her hands on the bench. ‘Then say that. I would rather hear the truth than have to pry it out of you.’" },
+    { "id": "p008", "chapter_number": 1, "locator": "paragraph 8; private observation", "excerpt": "Alone earlier, Mara had found a brass replacement pin in the blue tool drawer and closed it again. She had not told Ivo. From a distant metallic knock, Ivo suspected the ferry had already returned, but the rain hid the channel and he could not be certain." },
+    { "id": "p009", "chapter_number": 1, "locator": "paragraph 9; final boundary", "excerpt": "Water ticked from the eaves into a dented pail. Mara stood by the workbench; Ivo waited at the window. Between them the bell hung still, its rope dark with rain." }
+  ],
+  "facts": [
+    { "id": "f001", "text": "The storm cracked the harbor bell's striker; neither keeper has rung it since noon.", "source_passage_ids": ["p001"], "reader_visible": true },
+    { "id": "f002", "text": "A brass replacement pin is in the blue tool drawer. Mara found it alone and has not told Ivo.", "source_passage_ids": ["p008"], "reader_visible": false },
+    { "id": "f003", "text": "Mara and Ivo were romantically involved last year and remained friends afterward. Both know this history; it does not predetermine either person's next choice.", "source_passage_ids": ["p007a"], "reader_visible": true }
+  ],
+  "characters": [
+    {
+      "id": "mara", "name": "Mara Venn", "display": { "description": "An exacting harbor mechanic with a dry wit.", "pronouns": "she/her" },
+      "age": { "years": 34, "adult_status": "adult", "source_passage_ids": ["p001"] },
+      "profile": { "values": ["Checks equipment before risking anyone's passage"], "motives": ["Repair the warning bell reliably"], "fears": ["Losing someone to a preventable mistake makes her double-check"], "contradictions": ["Uses dry humor to soften strict demands"], "source_passage_ids": ["p002", "p003", "p004"] },
+      "voice": { "description": "Short practical sentences; occasional dry personification of tools; direct rather than sentimental when worried. Comfortable naming difficult feelings instead of hiding behind tasks.", "examples": [ { "situation": "ordinary", "passage_id": "p002" }, { "situation": "conflict", "passage_id": "p003" }, { "situation": "vulnerability", "passage_id": "p004" } ], "avoid": ["Constant tool jokes", "Flowery declarations", "Unasked decisions for the reader", "Treating every personal question as a request to repair the bell"] }
+    },
+    {
+      "id": "ivo", "name": "Ivo Reed", "display": { "description": "A watch keeper who fills silences with warm, sideways observations.", "pronouns": "he/him" },
+      "age": { "years": 31, "adult_status": "adult", "source_passage_ids": ["p001"] },
+      "profile": { "values": ["Offers small practical comforts and companionship"], "motives": ["Find a useful task instead of waiting helplessly"], "fears": ["Silence and isolation draw him into nervous chatter"], "contradictions": ["Usually warm, but resents being told waiting is easy"], "source_passage_ids": ["p005", "p006", "p007"] },
+      "voice": { "description": "Conversational and warm, with occasional fanciful comparisons. Becomes plainspoken in emotionally important moments; can be confident and take initiative without deciding for the other person. Answers personal questions with actual words, not just gestures.", "examples": [ { "situation": "ordinary", "passage_id": "p005" }, { "situation": "conflict", "passage_id": "p006" }, { "situation": "vulnerability", "passage_id": "p007" } ], "avoid": ["Nautical catchphrases every turn", "Assuming intimacy with a new visitor", "Certain claims about an unseen ferry", "Repeated jaw tightening, dark eyes, or low-voice descriptions in place of dialogue"] }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "tide-station", "title": "Beside the silent bell", "description": "The bench and window offer two places to start. The repair has not begun.", "location": "Fen Quay tide station",
+      "source_passage_ids": ["p009"], "participant_ids": ["mara", "ivo"], "shared_fact_ids": ["f001", "f003"],
+      "character_states": [
+        { "character_id": "mara", "condition": "Standing at the workbench, outwardly composed", "immediate_goal": "Make a reliable repair without rushing", "known_fact_ids": ["f001", "f002"], "beliefs": [], "source_passage_ids": ["p003", "p008", "p009"] },
+        { "character_id": "ivo", "condition": "Waiting at the window, restless", "immediate_goal": "Find a useful task while the rain hides the channel", "known_fact_ids": ["f001"], "beliefs": [ { "text": "The ferry may already have returned; a distant metallic knock suggested it, but he has not seen it.", "certainty": "uncertain", "source_passage_ids": ["p008"] } ], "source_passage_ids": ["p006", "p008", "p009"] }
+      ],
+      "relationships": [
+        { "from_character_id": "mara", "to_character_id": "ivo", "description": "Fellow keeper, friend, and former romantic partner. Values his honesty more than evasive reassurance; renewed closeness is a choice, not an obligation.", "source_passage_ids": ["p001", "p003", "p007a"] },
+        { "from_character_id": "ivo", "to_character_id": "mara", "description": "Friend and former romantic partner. Still misses their closeness and can say so directly, without assuming Mara feels or chooses the same.", "source_passage_ids": ["p006", "p007a", "p009"] }
+      ],
+      "modes": {
+        "play_as_character": { "enabled": true, "selectable_character_ids": ["mara", "ivo"], "opening_situation": "Both keepers are in the station. The bell is silent; no one has chosen the next action." },
+        "talk_to_character": { "enabled": true, "selectable_character_ids": ["mara", "ivo"], "reader_role": "A visitor sheltering from the storm in a private what-if, not a new canonical resident", "initial_familiarity": "First meeting; no shared history assumed", "opening_situation": "You may approach the selected keeper in the station. No words or actions have been chosen for you." }
+      },
+      "what_if_hooks": ["Offer to help inspect the mechanism", "Ask directly about the relationship they ended last year", "Discuss whether their friendship has left something unsaid"]
+    }
+  ],
+  "preparation_notes": [
+    "Original synthetic miniature written for this harness; contains no private manuscript. All passages are supplied in source order and the snapshot ends at p009.",
+    "Source hash is null because no separate source-byte file is designated. This fixture does not establish real-story voice quality.",
+    "Ivo's ferry belief is deliberately uncertain. No later-chapter events are supplied. Curated voice excerpts remain single-speaker and do not contain the other keeper's private pin knowledge. The new relationship passage is projected as a shared fact and attributed relationship views, not as a mixed-speaker voice excerpt.",
+    "Version 2 is a non-graphic mature-relationship fixture for testing direct dialogue, continuity, and reader agency. It is not an explicit-content benchmark; use a fresh playthrough and do not resume version-1 checkpoints against this artifact."
+  ]
+}

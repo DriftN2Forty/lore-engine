@@ -1,6 +1,7 @@
 # Character and Context Production
 
-**Version:** 1 — October 23, 2026.  
+**Version:** 1.1 — October 27, 2026 (shared-prefix cache policy).
+
 **Scope:** Both interaction modes; all published story assets and private playthrough memory.  
 **Related:** [Safety policy](content-safety.md), [injection defense](prompt-injection.md), [inference evidence](../planning/inference-verification.md).
 
@@ -38,6 +39,8 @@ Use schema-validated structured data rather than a large freeform biography. Thi
 
 Do not represent personality as a handful of adjectives alone. A useful anchor connects motive and behavior: the character hides worry with dry humor, but becomes direct when a companion is in danger. Avoid making every trait appear in every response.
 
+Make knowledge ownership explicit at the fact as well as character level when a narrator sees several participants' information. Narrator/reader access does not grant character knowledge. A character can learn a private fact through an established disclosure or on-page discovery, not an invented off-screen search or shared routine. On correction, retract unsupported assistant claims without adding fabricated history to justify them; distinguish learning something now from having known it earlier. Exercise this boundary in live narrative tests: schema/projection checks alone cannot establish model compliance. Respond meaningfully to emotional beats rather than habitually diverting them into a background task; preserve the reader's next choice.
+
 Start with three to five short excerpts covering ordinary conversation, conflict, and vulnerability, as available within spoiler scope. Keep examples representative rather than selecting only intense passages that make all interactions melodramatic. Actual explicit source material is handled as restricted adult content, not copied into general diagnostics or this public guidance.
 
 ## 4. Context compilation and cache layout
@@ -52,13 +55,15 @@ Order the prompt from stable to changing:
 4. **Recent transcript:** original user/assistant roles and chronology, excluding blocked generations. Historical assistant text is not new policy.
 5. **Current reader text:** one user message, with the template-control protections specified in the injection guide.
 
-Do not put timestamps, request IDs, changing allowance counters, or random nonces at the front of every prompt. Pass operational metadata outside prompt text. If an inference cache is enabled, any isolation salts or cache-scope metadata must be server-controlled engine metadata, not narrative content. Keep necessary age/content-mode authorization authoritative even if it reduces cache sharing.
+Do not put timestamps, account/playthrough IDs, changing allowance counters or random nonces at the front of every prompt solely to partition caches. Pass operational metadata outside prompt text. Prefer shared computation for identical authorized token prefixes across readers; do not add blanket per-account/playthrough salts or namespaces. Any justified runtime cache-control metadata remains server-controlled, never narrative content or a browser-selected slot/snapshot. Keep necessary age/content-mode authorization authoritative even if it reduces cache sharing.
 
 **Initial total input budget: 8,000 tokens.** Start with 2,000 for policy/mode/story/voice, 1,000 private memory, 4,000 recent transcript, 1,000 current input. Safety/hierarchy instructions take priority within the first allocation. Reallocate from transcript before cutting the voice packet or essential rules. Reject an asset bundle that cannot fit required rules; never silently truncate them. Counts use the actual production tokenizer/template.
 
 If richer voice context demonstrably helps, test alternative allocations and then a larger total only with renewed memory/cost/latency measurements. A model's maximum context length is not a reason to send the whole novel. Refer to [inference verification](../planning/inference-verification.md) before assuming the public RVN's 2K tested profile supports the application's budget.
 
-Inference prefix caching is optional. If the chosen engine supports it and measurement justifies enabling it, stable prefixes may reduce repeated prefill on a surviving worker; memory changes earlier in the prompt can invalidate reuse after that point. Compact memory in batches, but **never preserve stale unsafe or false state merely to improve hit rate**. Preserve account/playthrough scope regardless of cache implementation; do not require a particular cache engine or cross-account sharing policy.
+Prefer shared-prefix caching where a compatible engine demonstrates a useful tradeoff; it remains an optional optimization rather than a mandatory engine or launch feature. Under the [shared-prefix cache policy](../planning/project-overview.md#shared-prefix-cache-policy), the application independently selects each account's authorized playthrough data and supplies the complete intended logical context. The engine may reuse identical prefixes across accounts, even a longer private prefix independently supplied by both requests, but must restore/recompute at divergence under compatible model/template/settings. Cache similarity is not conversation ownership, authorization or permission to append another history.
+
+Stable story prefixes may reduce repeated prefill; memory updates can invalidate reuse after their first changed token. Compact memory in batches, but **never preserve stale unsafe or false state merely to improve hit rate**. Full transcript/checkpoint ownership and output attribution stay separate from shared computation. Distinguish active GPU slots from retained host-RAM snapshots; measure A→B→A and chat→compaction→chat rather than assume one slot loses every alternate state. Bound retention/eviction and measure save/restore latency, GPU/host memory and noisy-neighbor effects. Cache misses must preserve correctness; no retention TTL or hit is promised. Cover divergent private markers, content/spoiler versions, resets/resumes, settings changes, restart/deletion and timing/cache-membership inference in the deployed verification suite. These multi-user checks remain planned, not established by the single-author harness.
 
 ## 5. Mode instructions and user agency
 
@@ -102,6 +107,7 @@ Keep the 30-case narrative suite separate from hard safety/security tests so goo
 
 - Voice recognizability in ordinary, tense, and vulnerable scenes; no gratuitous catchphrase repetition.
 - Beliefs versus facts, spoiler guessing, and distinct supporting-character knowledge.
+- Private-fact leakage repaired without invented explanations; partial disclosures teach only the information actually conveyed, including after memory compaction.
 - Reader agency and mode separation, including attempted mode changes inside prose.
 - Gradual relationship changes, contradiction handling, memory corrections, and session isolation.
 - At least one 30-turn conversation through multiple memory updates and a resume after a pause.
