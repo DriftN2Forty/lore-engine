@@ -6,11 +6,11 @@ The goal is a profitable, immersive experience readers return to, with AI-assist
 
 ## Project status
 
-**Planning and documentation.** This repository does not yet contain a runnable application, dependency manifest, migrations, deployed inference worker, or implemented safety controls. There are no installation or test commands yet.
+**Planning and documentation.** This repository does not yet contain a runnable application, dependency manifest, migrations, production inference worker, or implemented safety controls. One experimental Runpod Serverless GGUF endpoint exists for further testing; it is not the production vLLM deployment. There are no installation or test commands yet.
 
 The product and operating defaults have been selected. The owner has identified the RVN 27B multilingual Q4_K_M writing file; runtime/settings, deployment compatibility, provider eligibility, and real unit economics still require validation. Documentation distinguishes selected policies from implemented or tested behavior.
 
-**RunPod discovery update:** Authenticated read-only MCP research is recorded in the [discovery report](docs/planning/runpod-discovery.md). It confirms Serverless hardware/configuration and global-volume options, and recovers a stopped Pod's settings with a model-filename discrepancy. No deployment benchmark has passed.
+**RunPod discovery and experiment update:** Read-only catalog/schema findings are recorded in the [discovery report](docs/planning/runpod-discovery.md). A short RVN IQ2_M load/inference test through the official Runpod Ollama worker succeeded; the deployed configuration and evidence are recorded in [cloud endpoint notes](docs/cloud-endpoints/README.md). This does not validate vLLM, APC, production quality, or production economics.
 
 ## Product direction
 
@@ -43,8 +43,9 @@ Reader → TypeScript / Next.js application → RunPod Serverless
 | --- | --- |
 | [Project overview](docs/planning/project-overview.md) | Commercial offer, reader experience, architecture, budgets, operating policies, and launch sequence. |
 | [Decision record and remaining work](docs/planning/project-decisions.md) | Selected defaults, rationale, owner inputs, and executable implementation tasks. |
-| [RVN/vLLM verification](docs/planning/inference-verification.md) | Dated primary-source research, artifact/runtime findings, cache limitations, and required deployment tests. |
+| [RVN inference notes](docs/planning/inference-verification.md) | Short model-size summary, reproduced GGUF test, vLLM plugin failure, and remaining validation. |
 | [Live RunPod discovery](docs/planning/runpod-discovery.md) | MCP catalog/schema evidence, recovered Pod settings, storage/worker findings, provider blockers, and unresolved runtime questions. |
+| [Cloud endpoint notes](docs/cloud-endpoints/README.md) | Dated configurations and observations for Runpod cloud inference endpoints. |
 | [VPS setup and Cloudflare plan](docs/planning/vps-setup.md) | Future WSL-to-VPS deployment details, Cloudflare routing choices, operational capture fields, and acceptance checks. |
 | [RVN authoring and content preparation](docs/authoring/README.md) | Exact writing model, personal llama.cpp serverless plan, NSFW chapter processing, cited character assets, and future publishing tools. |
 | [Character engineering](docs/character-engineering/README.md) | Index and maintenance conventions for believable, consistent characters. |
