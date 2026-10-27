@@ -11,7 +11,7 @@ This is currently a **documentation-only repository**. Do not assume a framework
 - [README.md](README.md): repository entry point and status.
 - [Project overview](docs/planning/project-overview.md): current product, architecture, economics, and operating specification.
 - [Decision record](docs/planning/project-decisions.md): selected defaults, rationale, outstanding inputs, and implementation tasks.
-- [Inference verification](docs/planning/inference-verification.md): evidence and unresolved RVN/vLLM/RunPod compatibility constraints.
+- [Inference verification](docs/planning/inference-verification.md): RVN artifact, runtime, RunPod, and topology evidence.
 - [Character engineering index](docs/character-engineering/README.md): maintenance rules and links to context, safety, and injection guidance.
 
 Read the applicable detailed guidance before changing narrative behavior, content processing, model serving, safety, or trust boundaries. Do not repeatedly load unrelated documents for a narrowly scoped edit.
@@ -30,12 +30,12 @@ If current documents conflict, follow the owner's latest explicit instruction an
 ## Product and inference constraints
 
 - Preserve both interaction modes and reader agency. Published facts are authoritative background; playthrough consequences are private and non-canonical. Keep accounts, playthroughs, story versions, and spoiler scopes isolated.
-- Target **RunPod Serverless + vLLM + a compatible quantization of the same RVN checkpoint** as the writing reference. Do not silently replace it with a different RVN family, generic API model, or unrelated checkpoint.
+- Preserve the owner's RVN checkpoint as the model baseline; the production inference engine/topology is not fixed to vLLM. Evaluate a local hot llama.cpp worker with RunPod Serverless overflow alongside other compatible options. Do not silently replace RVN with a different family, generic API model, or unrelated checkpoint.
 - Q4_K_M is the author's style baseline, not a requirement to serve that exact GGUF file. A compatible same-checkpoint quantization is allowed after style, safety, and deployment checks pass.
-- Match the actual writing artifact and parent revision before choosing hardware. The public NVFP4 finding does not establish identity with the owner's model, stock-image compatibility, working APC, long-context capacity, or a cheap single-GPU fit.
+- Match the actual writing artifact and parent revision before choosing hardware. The public NVFP4 finding does not establish identity with the owner's model, stock-image compatibility, long-context capacity, or a cheap single-GPU fit.
 - Use the later RunPod-MCP-enabled environment for live offering/configuration checks and bounded deployment tests. Public documentation inspection is not a reproduced runtime benchmark.
 - Pin artifact, runtime/image, tokenizer/template, and relevant settings. Record evidence date and provenance. Distinguish publisher-reported measurements from local results.
-- Cache savings apply primarily to repeated prefill, not free generation. Test APC, per-account cache isolation, warm/cold behavior, actual concurrency, and total billed costs. Never trade private-data isolation or safety for cache hits.
+- Caching is an optional optimization, not a required engine or launch feature. If enabled, measure its effect and preserve account/data-scope isolation; never trade private-data isolation or safety for cache hits. Test warm/cold behavior, actual concurrency, and total billed costs.
 - Follow the current budgets in the overview; do not duplicate mutable financial limits throughout the repository. Estimate charges before paid tests, including large model storage/loading, GPU startup/idle time, guards, and failures.
 
 ## Character, safety, and security requirements

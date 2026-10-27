@@ -8,7 +8,7 @@
 
 A believable character has a stable voice and motives, limited knowledge, plausible emotional reactions, and a coherent history with this reader. The model should respond to the current exchange rather than recite its biography, flatter every choice, rush intimacy, or invent convenient plot facts.
 
-RVN is the preferred model family because the owner writes with it. A vLLM-compatible quantization of the **same checkpoint** is permitted after comparison to the Q4_K_M writing reference; quantization equivalence is not assumed. The published text is the style target, not every unedited generation produced during writing.
+RVN is the preferred model family because the owner writes with it. A compatible quantization of the **same checkpoint** is permitted after comparison to the Q4_K_M writing reference; quantization equivalence is not assumed. The published text is the style target, not every unedited generation produced during writing.
 
 The exact reference is `RVN-Q4_K_M-multilingual.gguf` from the 27B GGUF repository. The [authoring guide](../authoring/README.md) records its publisher checksum and a personal llama.cpp serverless workflow for project work, NSFW chapter processing, and candidate character assets. Using the writing model may help voice selection, but it does not give a fresh session memory of the story or replace cited extraction and independent validation below. Draft-derived candidates remain outside published runtime bundles until their source is published and designated for this product.
 
@@ -52,13 +52,13 @@ Order the prompt from stable to changing:
 4. **Recent transcript:** original user/assistant roles and chronology, excluding blocked generations. Historical assistant text is not new policy.
 5. **Current reader text:** one user message, with the template-control protections specified in the injection guide.
 
-Do not put timestamps, request IDs, changing allowance counters, or random nonces at the front of every prompt. Pass operational metadata outside prompt text. Cache isolation salts are server-controlled engine metadata, not narrative content. Keep necessary age/content-mode authorization authoritative even if it reduces cache sharing.
+Do not put timestamps, request IDs, changing allowance counters, or random nonces at the front of every prompt. Pass operational metadata outside prompt text. If an inference cache is enabled, any isolation salts or cache-scope metadata must be server-controlled engine metadata, not narrative content. Keep necessary age/content-mode authorization authoritative even if it reduces cache sharing.
 
 **Initial total input budget: 8,000 tokens.** Start with 2,000 for policy/mode/story/voice, 1,000 private memory, 4,000 recent transcript, 1,000 current input. Safety/hierarchy instructions take priority within the first allocation. Reallocate from transcript before cutting the voice packet or essential rules. Reject an asset bundle that cannot fit required rules; never silently truncate them. Counts use the actual production tokenizer/template.
 
 If richer voice context demonstrably helps, test alternative allocations and then a larger total only with renewed memory/cost/latency measurements. A model's maximum context length is not a reason to send the whole novel. Refer to [inference verification](../planning/inference-verification.md) before assuming the public RVN's 2K tested profile supports the application's budget.
 
-APC can reuse the stable prefix and an unchanged transcript prefix on a surviving worker. Memory changes earlier in the prompt invalidate reuse after that point. Compact memory in batches, not every turn, but **never preserve stale unsafe or false state merely to improve hit rate**. Per-account salts deliberately limit cross-account cache sharing.
+Inference prefix caching is optional. If the chosen engine supports it and measurement justifies enabling it, stable prefixes may reduce repeated prefill on a surviving worker; memory changes earlier in the prompt can invalidate reuse after that point. Compact memory in batches, but **never preserve stale unsafe or false state merely to improve hit rate**. Preserve account/playthrough scope regardless of cache implementation; do not require a particular cache engine or cross-account sharing policy.
 
 ## 5. Mode instructions and user agency
 

@@ -40,7 +40,7 @@ The endpoint's `HF_MODEL_FILE` selects one file from Hugging Face at worker star
 - A warmed short chat request reported 205.6 ms prompt evaluation and 487.6 ms generation for 21 generated tokens (about 41 tokens/sec). Its first streamed token arrived approximately 0.2–0.4 seconds after the request began; the final `OK` arrived about 0.46 seconds after the first streamed reasoning token.
 - The file download began at approximately `2026-10-27T03:05:31.7Z`; GGUF loading metadata appeared around `03:06:00Z`, suggesting roughly 28 seconds for the initial 9.3 GiB transfer. This is inferred from log timestamps, not an explicit download-completion timer.
 
-These are short exploratory requests on one A40, not a deployment benchmark. No context-capacity sweep, sustained throughput, cache isolation, cold restart repeatability, quality comparison against the writing Q4_K_M, or complete billed-cost audit was performed. Ollama's own prompt-cache messages indicate local prompt reuse; they do not establish the planned vLLM APC requirement or per-account isolation.
+These are short exploratory requests on one A40, not a deployment benchmark. No context-capacity sweep, sustained throughput, cache isolation, cold restart repeatability, quality comparison against the writing Q4_K_M, or complete billed-cost audit was performed. Ollama's own prompt-cache messages indicate local prompt reuse; they do not establish a measured benefit or verify account/playthrough isolation.
 
 The successful short test endpoint was deleted after measurement. Its settings were recreated as endpoint `0lzkez4m911xvp`; its model must download again when a request starts a fresh worker because no persistent storage/model cache is attached. The configured idle timeout is 120 seconds, but the previous endpoint was explicitly deleted rather than waiting to verify timeout-driven shutdown.
 
@@ -52,7 +52,7 @@ The separate vLLM experiment used vLLM 0.32.0 with `vllm-gguf-plugin` 0.0.5 on a
 2. The next run failed because the plugin expected `vision_config.num_hidden_layers`, while the Qwen3.5 config exposed `depth`.
 3. After a local fallback to `vision_config.depth`, the plugin failed to map 432 model parameters, notably Qwen3.5 `linear_attn` tensors.
 
-The vLLM endpoints were deleted after failures. These results show this tested plugin/runtime combination was incompatible with this artifact; they do not prove that the plugin cannot support other Qwen architectures or that future plugin versions cannot support this one. The working Ollama/llama.cpp result does not meet the project's selected vLLM/APC requirement.
+The vLLM endpoints were deleted after failures. These results show this tested plugin/runtime combination was incompatible with this artifact; they do not prove that the plugin cannot support other Qwen architectures or that future plugin versions cannot support this one. This was one engine experiment; vLLM and APC are not project requirements.
 
 ## Recreate / inspect
 

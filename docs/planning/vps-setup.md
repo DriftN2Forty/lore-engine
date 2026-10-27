@@ -9,7 +9,7 @@
 3. Put the owned domain under Cloudflare DNS and route the application hostname to the VPS. Decide at deployment time whether to use a Cloudflare Tunnel or proxied DNS with a tightly restricted origin firewall. Do not assume the random `trycloudflare.com` Quick Tunnel URL is durable or suitable for production.
 4. Operate the VPS under the application's established backup, monitoring, recovery, privacy, and budget requirements. RunPod remains the separately selected inference provider; hosting the application on a VPS does not imply putting the model/GPU there.
 
-This future VPS intention supersedes the managed-Render hosting default in [the overview](project-overview.md) and [decision D09](project-decisions.md#d09--hosting-and-operational-shape). Provider, region, sizing, operating system, database placement, and Cloudflare routing are still open implementation choices. Recheck total costs against the existing fixed-hosting target before committing; this document does not authorize spend or select a provider.
+This future VPS intention supersedes the managed-Render hosting default in [the overview](project-overview.md) and [the hosting decision section](project-decisions.md#3-resolved-architecture-and-data-decisions). Provider, region, sizing, operating system, database placement, and Cloudflare routing are still open implementation choices. Recheck total costs against the existing fixed-hosting target before committing; this document does not authorize spend or select a provider.
 
 ## 2. Capture before renting
 
@@ -33,6 +33,19 @@ Choose one supported production routing design and document its exact behavior:
 
 - **Cloudflare Tunnel:** the VPS runs `cloudflared` and opens an outbound tunnel; Cloudflare routes the hostname to the local application service. This avoids making the application origin directly reachable on a public ingress port, but requires a managed tunnel credential and reliable service supervision. Keep credentials in a secret store and restrict the tunnel's published hostname/service mapping.
 - **Proxied DNS to the VPS:** Cloudflare DNS points the hostname at the VPS and proxies HTTP(S). Configure the VPS/provider firewall to permit only required ports and, if relying on Cloudflare as the public edge, restrict web ingress to Cloudflare's current published source ranges. Automate updates to those ranges and ensure administrative access is separately restricted. Configure TLS from Cloudflare to the origin; do not use an insecure origin mode.
+
+### Optional home inference origin
+
+For a future cost experiment, the owner's PC could run an always-hot `llama-server` using the GGUF, while RunPod Serverless handles overflow. Keep the application/VPS backend as the only public inference gateway:
+
+```text
+Reader → application/VPS router → private Cloudflare Tunnel → home llama-server (hot path)
+                              └→ authenticated RunPod Serverless endpoint (overflow)
+```
+
+The PC would initiate an outbound Cloudflare Tunnel; a hostname such as `llama-origin.example.com` would route only to the private server origin. It is transport, not queue-aware load balancing: application code must select a healthy origin, inspect the local queue, enforce a threshold, and route overflow to RunPod. Do not publish `llama-server` directly to the public internet or let browsers choose either inference origin. Restrict tunnel access to the application backend with an authenticated policy and backend-held credentials.
+
+Before using this with reader data, verify PC/GPU availability, restart and update behavior, home upload bandwidth, tunnel health, threshold/race behavior, Cloudflare and model-provider data handling, and RunPod cold-start plus model-download delay. Define behavior when the home PC or RunPod is unavailable. Compare full active-worker cost and latency, including PC power/network and RunPod startup/idle charges. The architecture and engine are subject to measured selection; no vLLM or APC requirement is in force. Any caching remains optional and must preserve account and playthrough isolation.
 
 Do not rely on a home ISP's CGNAT behavior for a rented VPS: the VPS has its own network exposure and firewall boundary. Do not expose database, SSH, metrics, or debug ports publicly without a specific need and restriction. Quick Tunnels are for experiments, have temporary random hostnames and no uptime guarantee, and should be stopped when not in use.
 

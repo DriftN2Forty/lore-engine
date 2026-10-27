@@ -5,7 +5,7 @@ Maintained documentation for producing believable, consistent, immersive charact
 **Status:** Selected implementation guidance; controls and test suites described here are not implemented yet.  
 **Version:** 1 — October 23, 2026.  
 **Product plan:** [Overview](../planning/project-overview.md).  
-**Inference evidence:** [RVN/vLLM verification](../planning/inference-verification.md).
+**Inference evidence:** [RVN inference verification](../planning/inference-verification.md).
 
 ## Documents
 
@@ -30,4 +30,4 @@ Maintained documentation for producing believable, consistent, immersive charact
 
 | Version | Date | Change |
 | --- | --- | --- |
-| 1 | 2026-10-23 | Initial context-production, adult-content/self-harm, and layered injection-defense guidance; compatible quantized RVN/vLLM is the inference target. |
+| 1 | 2026-10-23 | Initial context-production, adult-content/self-harm, and layered injection-defense guidance; preserve the RVN writing checkpoint while selecting serving engine/topology by evidence. |
