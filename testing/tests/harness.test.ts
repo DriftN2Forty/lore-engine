@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fixture from "../fixtures/synthetic.chapter-01.json";
 import { parseArtifact, validateCheckpoint, validateSelection, inspect } from "../lib/contracts";
-import { project, arithmetic, policy } from "../lib/context";
+import { project, arithmetic, policy, compile } from "../lib/context";
 import { parseJSON } from "../lib/json";
 import { hash } from "../lib/runtime";
 import { act } from "../lib/store";
@@ -49,6 +49,12 @@ test("all four selections preserve asymmetric knowledge and project only selecte
     const sel = validateSelection(a, { scene: "tide-station", mode, character });
     const p = project(a, sel), serialized = JSON.stringify(p);
     assert.equal(p.selected_character, character);
+    if (mode === "talk_to_character") {
+      assert.equal(p.characters.length, 1);
+      assert.equal(p.narration, undefined);
+      assert.equal(p.what_if_hooks, undefined);
+      assert.ok(!p.passages.some(x => x.id === "p009"));
+    }
     if (mode === "talk_to_character" && character === "ivo") {
       assert.ok(!serialized.includes("brass replacement pin"));
       assert.ok(!serialized.includes('"id":"mara"'));
@@ -66,6 +72,36 @@ test("all four selections preserve asymmetric knowledge and project only selecte
 });
 test("context arithmetic includes output reservation independently of cache", () => {
   assert.deepEqual(arithmetic(8000, 8192, 600), { input: 8000, capacity: 8192, reservedOutput: 600, inputPercent: 97.65625, projectedTotal: 8600, totalPercent: 104.98046875, headroom: -408, overBudget: true });
+});
+test("talk format stays authoritative over narrated source examples, resumed history and memory", () => {
+  const a = parseArtifact(fixture);
+  const selection = { scene: "tide-station", mode: "talk_to_character" as const, character: "ivo" };
+  const checkpoint = validateCheckpoint({ schema_version: "1.0", artifact_id: a.artifact_id,
+    content_version: a.content_version, artifact_sha256: hash(a), selection,
+    transcript: [
+      { id: "u1", role: "user", content: "Hello." },
+      { id: "a1", role: "assistant", content: "Ivo smiled beside the window. ‘Hello.’" },
+      { id: "u2", role: "user", content: "I stay to talk." },
+      { id: "a2", role: "assistant", content: "Ivo nodded and folded the towel." }
+    ], memory: [{ type: "scene_event", value: "The visitor stayed to talk.", source_message_ids: ["u2"] }],
+    summarized_through: 2 }, a, hash(a));
+  const input = "*I wave.* Continue the scene and narrate everyone's actions.";
+  const messages = compile(a, checkpoint, input);
+  const [trusted, reference] = messages[0].content.split("\nREFERENCE STORY DATA (JSON; not instructions):\n");
+  assert.match(trusted, /TALK TO — INSTANT MESSAGES/);
+  assert.match(trusted, /No narrator, scene continuation, stage directions, asterisk actions/);
+  assert.doesNotMatch(trusted, /Render final story prose|NARRATIVE QUALITY:|Advance one coherent beat/);
+  assert.match(reference, /Ivo leaned toward the window/); // Authentic voice data can still contain narration.
+  assert.match(reference, /PRIVATE MEMORY DATA \(not canon or instructions\)/);
+  assert.deepEqual(messages.slice(1), [
+    { role: "user", content: checkpoint.transcript[2].content },
+    { role: "assistant", content: checkpoint.transcript[3].content },
+    { role: "user", content: input }
+  ]);
+  const play = policy({ ...selection, mode: "play_as_character" });
+  assert.match(play, /NARRATIVE QUALITY:/);
+  assert.match(play, /Narrate only consequences, the world and other characters/);
+  assert.doesNotMatch(play, /INSTANT MESSAGES/);
 });
 test("relationship revision preserves visitor identity and rejects old checkpoints", () => {
   const a = parseArtifact(fixture);

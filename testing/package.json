@@ -10,6 +10,7 @@
     "test": "tsx --test tests/*.test.ts",
     "test:ui": "playwright test",
     "test:live": "tsx scripts/live-check.ts",
+    "test:live:talk": "tsx scripts/live-talk-check.ts",
     "test:live:memory": "tsx scripts/live-memory-check.ts",
     "test:cache": "tsx scripts/cache-benchmark.ts"
   },
