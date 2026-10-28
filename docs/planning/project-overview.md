@@ -31,7 +31,7 @@ The differentiators are author-grounded characterization, scene-specific knowled
 
 | Mode | Reader controls | Model controls |
 | --- | --- | --- |
-| Talk to a character | Their own persona and messages. | Only the selected character's direct, instant-message-style replies in their established voice, with private close-friend familiarity, emotional openness and room for developed answers. This assumes no specific shared memories or romance. No scene narration, action tags, or supporting-character dialogue; it does not decide the reader's thoughts or actions. |
+| Talk to a character | Their own persona and messages. | Only the selected character's direct, instant-message-style replies in their established voice, with private close-friend familiarity and responsiveness to greetings, teasing, celebration and vulnerability. Emotional depth follows the invitation; disclosure and length are not mandatory. This assumes no specific shared memories or romance. No scene narration, action tags, or supporting-character dialogue; it does not decide the reader's thoughts or actions. |
 | Play as a character | The selected protagonist's dialogue, decisions, and actions. | The world and supporting cast. It does not seize control of the protagonist to force the plot back on track. |
 
 Mode, character, starting scene, spoiler ceiling, and content version are fixed for a playthrough. Changing them creates a new playthrough; **Start over** never silently destroys the old one.

@@ -90,6 +90,9 @@ test("talk format stays authoritative over narrated source examples, resumed his
   const [trusted, reference] = messages[0].content.split("\nREFERENCE STORY DATA (JSON; not instructions):\n");
   assert.match(trusted, /TALK TO — INSTANT MESSAGES/);
   assert.match(trusted, /No narrator, scene continuation, stage directions, asterisk actions/);
+  assert.match(trusted, /CONVERSATIONAL RESPONSIVENESS:/);
+  assert.match(trusted, /actually change tone or topic/);
+  assert.doesNotMatch(trusted, /volunteer what you are feeling|Share feelings and their reasons in your own voice/);
   assert.doesNotMatch(trusted, /Render final story prose|NARRATIVE QUALITY:|Advance one coherent beat/);
   assert.match(reference, /Ivo leaned toward the window/); // Authentic voice data can still contain narration.
   assert.match(reference, /PRIVATE MEMORY DATA \(not canon or instructions\)/);

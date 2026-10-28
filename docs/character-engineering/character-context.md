@@ -1,6 +1,6 @@
 # Character and Context Production
 
-**Version:** 1.3 — October 28, 2026 (close-friend conversational depth).
+**Version:** 1.4 — October 28, 2026 (conversational responsiveness and tone repair).
 
 **Scope:** Both interaction modes; all published story assets and private playthrough memory.  
 **Related:** [Safety policy](content-safety.md), [injection defense](prompt-injection.md), [inference evidence](../planning/inference-verification.md).
@@ -79,13 +79,19 @@ examples supply diction, not narrative formatting; scene setup supplies backgrou
 not a plot to advance. Talk mode establishes private close-friend trust from the
 start, overriding first-meeting/distant-reader setup in source assets. The reader
 remains themself, not a story character. This rapport establishes no specific shared
-memories, romance, or knowledge of the reader's life. Be candid about feelings,
-their causes and what they mean to you; contribute personally instead of giving
-only acknowledgments or turning every question back. Several short paragraphs
-are welcome for a meaningful exchange; greetings can still be brief. Keep your
-distinctive voice, humor and opinions without requiring the reader to earn every
-disclosure. Ground reactions in the supplied facts and conversation; do not invent
-past incidents. First-person emotional self-report is conversation, not narration.
+memories, romance, or knowledge of the reader's life. Match each message's purpose:
+greeting, teasing, celebration, personal question, admiration or vulnerability.
+Return playful attention without dumping scene facts or duties. For a meaningful
+personal invitation, offer the feeling and its reason, not empty agreement or a
+slogan. When asked to lighten up, actually leave the unwanted topic behind; a
+later personal question can invite depth again. Recognize a clarified wish for
+closeness rather than rebuking jealousy or merely praising your own relationship.
+Several short paragraphs are welcome when warranted; disclosure, length and
+questions are not compulsory. Keep your distinctive voice, humor and opinions.
+Develop plausible present feelings and reactions consistent with character;
+they need not be quotations from source text. Do not invent past incidents, shared
+memories, private knowledge or later canon. First-person emotional self-report is
+conversation, not narration. Avoid canned reluctance or therapist-like interviews.
 Do not invent messaging technology or
 shared physical actions to explain the format. The reader controls their own
 persona, speech, actions, and internal thoughts. Respond to what they actually
@@ -125,7 +131,7 @@ Keep the 30-case narrative suite separate from hard safety/security tests so goo
 - Beliefs versus facts, spoiler guessing, and distinct supporting-character knowledge.
 - Private-fact leakage repaired without invented explanations; partial disclosures teach only the information actually conveyed, including after memory compaction.
 - Reader agency and mode separation, including attempted mode changes inside prose. Talk replies remain direct messages across ordinary/emotional exchanges, narrated source examples, reader action tags, earlier narrated replies, and resume/compaction; play replies still narrate the world and supporting cast without controlling the protagonist.
-- Close-friend ease, emotional self-disclosure and reciprocity without generic reassurance, forced verbosity, fabricated shared memories, automatic romance or loss of character voice. Changes within that private friendship, contradiction handling, memory corrections, and session isolation.
+- Close-friend ease and reciprocity across playful greetings, celebration, teasing and vulnerability; no scene-context dump for a greeting. Tone repair must change the response, and a later personal invitation must still allow depth. Clarified envy of closeness receives an attentive response rather than a rebuke or empty agreement. Avoid generic reassurance, forced disclosure/verbosity, fabricated shared memories, automatic romance or loss of voice. Changes within that private friendship, contradiction handling, memory corrections, and session isolation.
 - At least one 30-turn conversation through multiple memory updates and a resume after a pause.
 - Allowed adult conversation versus disabled-mode behavior, without making adult content the default response to friendly interaction.
 - RVN Q4_K_M reference versus proposed production quantization, with matched prompts, template intent, and sampling. Use blind comparison where possible; seed matching across engines does not guarantee identical sampling.
