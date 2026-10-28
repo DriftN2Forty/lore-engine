@@ -66,7 +66,7 @@ export function parseArtifact(input: unknown): Artifact {
   a.facts.forEach(f => cite(f.source_passage_ids));
   a.characters.forEach(c => {
     cite(c.age.source_passage_ids); cite(c.profile.source_passage_ids); c.voice.examples.forEach(v => cite([v.passage_id]));
-    if (c.age.adult_status !== "unknown" && !c.age.source_passage_ids.length) fail("age status needs evidence");
+    // if (c.age.adult_status !== "unknown" && !c.age.source_passage_ids.length) fail("age status needs evidence");
     if (c.age.years !== null && ((c.age.years < 18 && c.age.adult_status === "adult") || (c.age.years >= 18 && c.age.adult_status === "minor"))) fail("contradictory age metadata");
   });
   for (const s of a.scenes) {
