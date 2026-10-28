@@ -14,7 +14,9 @@ test("synthetic import, all options, checkpoint resume, reset, inert rendering a
   await page.getByLabel("Your dialogue or action").press("Enter");
   await expect(page.getByRole("alert").filter({ hasText: "Local model unavailable" })).toBeVisible();
   await expect(page.getByLabel("Your dialogue or action")).toHaveValue("I ask about the bell.");
+  await expect(page.getByLabel("Your dialogue or action")).toBeFocused();
   await expect(page.locator("article")).toHaveCount(0);
+  await expect(page.locator(".transcript").getByRole("status")).toHaveCount(0);
   await expect(page.getByText("A brass replacement pin is in the blue tool drawer.", { exact: false })).not.toBeVisible();
   for (const mode of ["talk_to_character", "play_as_character"]) {
     await page.getByLabel("Mode", { exact: true }).selectOption(mode);
@@ -53,6 +55,8 @@ test("chat shortcuts preserve newlines and composition, send once, and scroll co
   const sent: string[] = [];
   let releaseReply!: () => void;
   const pendingReply = new Promise<void>(resolve => { releaseReply = resolve; });
+  let releaseFailure!: () => void;
+  const pendingFailure = new Promise<void>(resolve => { releaseFailure = resolve; });
   await page.route("**/api/local", async route => {
     const body = route.request().postDataJSON();
     if (body.action === "project") {
@@ -62,6 +66,11 @@ test("chat shortcuts preserve newlines and composition, send once, and scroll co
       const turn = chats;
       sent.push(body.text);
       if (turn === 1) await pendingReply;
+      if (turn === 3) {
+        await pendingFailure;
+        await route.fulfill({ status: 400, json: { error: "Synthetic send failure" } });
+        return;
+      }
       current.checkpoint.transcript.push(
         { id: `u-${turn}`, role: "user", content: body.text },
         { id: `a-${turn}`, role: "assistant", content: Array.from({ length: 50 }, (_, i) => `Synthetic reply ${turn}, line ${i + 1}.`).join("\n") }
@@ -69,13 +78,15 @@ test("chat shortcuts preserve newlines and composition, send once, and scroll co
       await route.fulfill({ json: current });
     } else {
       const response = await route.fetch();
-      if (body.action === "import") current = await response.json();
+      if (body.action === "import" || body.action === "select") current = await response.json();
       await route.fulfill({ response });
     }
   });
   await page.goto("/");
   await page.getByRole("button", { name: "Load synthetic chapter" }).click();
   const composer = page.getByLabel("Your dialogue or action"), transcript = page.locator(".transcript");
+  await expect(composer).toBeEnabled();
+  await page.getByLabel("Mode", { exact: true }).selectOption("talk_to_character");
   await expect(composer).toBeEnabled();
   await composer.press("Enter");
   await composer.fill("   ");
@@ -90,13 +101,21 @@ test("chat shortcuts preserve newlines and composition, send once, and scroll co
   expect(chats).toBe(0);
   await composer.press("Enter");
   await expect(composer).toBeDisabled();
+  await expect(composer).toHaveValue("");
+  await expect(transcript.locator("article")).toHaveCount(1);
+  await expect(transcript.locator("article.user p")).toHaveText("First line\nSecond line");
+  await expect(transcript.getByRole("status")).toHaveText("Mara Venn is typing");
+  await expect(page.getByLabel("Conversation progress")).toContainText("Completed exchanges: 0");
   expect(sent).toEqual(["First line\nSecond line"]);
   await composer.evaluate(el => el.closest("form")!.requestSubmit());
   expect(chats).toBe(1);
   releaseReply();
   await expect(composer).toBeEnabled();
   await expect(composer).toHaveValue("");
+  await expect(composer).toBeFocused();
   await expect(transcript.locator("article")).toHaveCount(2);
+  await expect(transcript.getByRole("status")).toHaveCount(0);
+  await expect(transcript.locator("article.user")).toHaveCount(1);
   await expect.poll(() => transcript.evaluate(el => el.scrollHeight > el.clientHeight && el.scrollHeight - el.clientHeight - el.scrollTop <= 1)).toBe(true);
 
   await transcript.evaluate(el => { el.scrollTop = 0; });
@@ -107,6 +126,26 @@ test("chat shortcuts preserve newlines and composition, send once, and scroll co
   await expect.poll(() => transcript.evaluate(el => el.scrollTop)).toBe(0);
   await page.getByRole("button", { name: "Send", exact: true }).click();
   await expect(transcript.locator("article")).toHaveCount(4);
+  await expect(transcript.getByRole("status")).toHaveCount(0);
+  await expect(composer).toBeFocused();
   await expect.poll(() => transcript.evaluate(el => el.scrollHeight - el.clientHeight - el.scrollTop)).toBeLessThanOrEqual(1);
   expect(sent).toEqual(["First line\nSecond line", "Another message"]);
+
+  await composer.fill("Keep this if sending fails.");
+  await composer.press("Enter");
+  await expect(composer).toHaveValue("");
+  await expect(transcript.locator("article")).toHaveCount(5);
+  await expect(transcript.getByRole("status")).toBeVisible();
+  await expect.poll(() => transcript.evaluate(el => el.scrollHeight - el.clientHeight - el.scrollTop)).toBeLessThanOrEqual(1);
+  releaseFailure();
+  await expect(page.getByRole("alert").filter({ hasText: "Synthetic send failure" })).toBeVisible();
+  await expect(composer).toHaveValue("Keep this if sending fails.");
+  await expect(composer).toBeFocused();
+  await expect(transcript.locator("article")).toHaveCount(4);
+  await expect(transcript.getByRole("status")).toHaveCount(0);
+  await composer.press("Enter");
+  await expect(transcript.locator("article")).toHaveCount(6);
+  await expect(composer).toHaveValue("");
+  await expect(composer).toBeFocused();
+  await expect(page.getByLabel("Conversation progress")).toContainText("Completed exchanges: 3");
 });
