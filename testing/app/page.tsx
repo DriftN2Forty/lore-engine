@@ -81,7 +81,7 @@ export default function Page() {
         <label>Character<select aria-label="Character" disabled={busy} value={c!.selection.character} onChange={e => void choose({ ...c!.selection, character: e.target.value })}>
           {scene!.modes[c!.selection.mode].selectable_character_ids.map(id => <option key={id} value={id}>{a!.characters.find(x => x.id === id)!.name}</option>)}
         </select></label></div>
-        <p>{scene!.description}</p><p>{scene!.modes[c!.selection.mode].opening_situation}</p>
+        <p>{scene!.description}</p><p>{c!.selection.mode === "talk_to_character" ? "A personal conversation between trusted close friends. The chapter supplies background, not a scene to act out; no specific shared memories are assumed." : scene!.modes.play_as_character.opening_situation}</p>
         {a!.characters.filter(ch => scene!.participant_ids.includes(ch.id)).map(ch => <p key={ch.id}><strong>{ch.name}</strong> ({ch.display.pronouns}): {ch.display.description}</p>)}
         <details><summary>Visible canon recap</summary>{a!.facts.filter(f => f.reader_visible).map(f => <p key={f.id}>{f.text}</p>)}</details>
       </section>
@@ -90,7 +90,7 @@ export default function Page() {
           <p><strong>Completed exchanges: {exchanges}</strong> · {c!.transcript.length} messages total ({exchanges} from you + {exchanges} RVN replies)</p>
           <p className="muted">Uncompacted exchanges: {uncompactedExchanges} / 12. {uncompactedExchanges >= 12 ? "Periodic compaction is due before the next reply." : "Periodic compaction is due before the next reply once this reaches 12."} One exchange is your message plus a completed RVN reply. Retained recent exchanges count toward this threshold; context overflow can trigger compaction sooner.</p>
         </div>
-        <p className="muted">{c!.selection.mode === "play_as_character" ? "You control your character's speech, actions, decisions and thoughts." : "You remain yourself; the model portrays the selected character."}</p>
+        <p className="muted">{c!.selection.mode === "play_as_character" ? "You control your character's speech, actions, decisions and thoughts." : "You remain yourself, talking as a trusted close friend. Candid feelings and fuller messages are welcome; scene narration is not."}</p>
         <div ref={transcript} className="transcript" aria-live="polite">{c!.transcript.map(m => <article className={m.role} key={m.id}><strong>{m.role === "user" ? "You" : "RVN"}</strong><p>{m.content}</p></article>)}</div>
         <form onSubmit={e => { e.preventDefault(); if (busy || !text.trim()) return; void run(async () => adopt(await api({ action: "chat", session: state.session, text }))); }}>
           <label htmlFor="message">Your dialogue or action</label><textarea id="message" value={text} onChange={e => setText(e.target.value)} onKeyDown={e => {

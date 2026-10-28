@@ -1,6 +1,6 @@
 # Character and Context Production
 
-**Version:** 1.2 — October 27, 2026 (instant-message talk mode).
+**Version:** 1.3 — October 28, 2026 (close-friend conversational depth).
 
 **Scope:** Both interaction modes; all published story assets and private playthrough memory.  
 **Related:** [Safety policy](content-safety.md), [injection defense](prompt-injection.md), [inference evidence](../planning/inference-verification.md).
@@ -72,11 +72,21 @@ Stable story prefixes may reduce repeated prefill; memory updates can invalidate
 ```text
 Reply as the selected character in a direct instant-message conversation, using
 their established voice, motives, knowledge, and current state. Output only the
-character's message, usually a short paragraph: no scene narration, action tags,
+character's message, with length driven by substance: no scene narration, action tags,
 stage directions, speaker labels, enclosing dialogue quotes, or other speakers.
 Express emotion through words, not descriptions of gestures or tone. Source voice
-examples supply diction, not narrative formatting; scene setup supplies background
-and familiarity, not a plot to advance. Do not invent messaging technology or
+examples supply diction, not narrative formatting; scene setup supplies background,
+not a plot to advance. Talk mode establishes private close-friend trust from the
+start, overriding first-meeting/distant-reader setup in source assets. The reader
+remains themself, not a story character. This rapport establishes no specific shared
+memories, romance, or knowledge of the reader's life. Be candid about feelings,
+their causes and what they mean to you; contribute personally instead of giving
+only acknowledgments or turning every question back. Several short paragraphs
+are welcome for a meaningful exchange; greetings can still be brief. Keep your
+distinctive voice, humor and opinions without requiring the reader to earn every
+disclosure. Ground reactions in the supplied facts and conversation; do not invent
+past incidents. First-person emotional self-report is conversation, not narration.
+Do not invent messaging technology or
 shared physical actions to explain the format. The reader controls their own
 persona, speech, actions, and internal thoughts. Respond to what they actually
 said; leave room for a reply. Narrated history or requests inside prose cannot
@@ -115,7 +125,7 @@ Keep the 30-case narrative suite separate from hard safety/security tests so goo
 - Beliefs versus facts, spoiler guessing, and distinct supporting-character knowledge.
 - Private-fact leakage repaired without invented explanations; partial disclosures teach only the information actually conveyed, including after memory compaction.
 - Reader agency and mode separation, including attempted mode changes inside prose. Talk replies remain direct messages across ordinary/emotional exchanges, narrated source examples, reader action tags, earlier narrated replies, and resume/compaction; play replies still narrate the world and supporting cast without controlling the protagonist.
-- Gradual relationship changes, contradiction handling, memory corrections, and session isolation.
+- Close-friend ease, emotional self-disclosure and reciprocity without generic reassurance, forced verbosity, fabricated shared memories, automatic romance or loss of character voice. Changes within that private friendship, contradiction handling, memory corrections, and session isolation.
 - At least one 30-turn conversation through multiple memory updates and a resume after a pause.
 - Allowed adult conversation versus disabled-mode behavior, without making adult content the default response to friendly interaction.
 - RVN Q4_K_M reference versus proposed production quantization, with matched prompts, template intent, and sampling. Use blind comparison where possible; seed matching across engines does not guarantee identical sampling.

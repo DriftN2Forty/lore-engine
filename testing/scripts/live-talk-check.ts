@@ -19,7 +19,7 @@ async function reply(session: any, text: string, label: string, talk: boolean) {
   const content = result.checkpoint.transcript.at(-1).content as string;
   const flags = formatFlags(content);
   const supportingCastReference = /\b(?:he|she|his|her|Ivo['’]s|Mara['’]s)\b/iu.test(content);
-  console.log(JSON.stringify({ kind: "format", case: label, flags, ...(talk ? {} : { supportingCastReference }), measurement: result.last }));
+  console.log(JSON.stringify({ kind: "format", case: label, flags, words: content.trim().split(/\s+/u).length, paragraphs: content.trim().split(/\n\s*\n/u).length, ...(talk ? {} : { supportingCastReference }), measurement: result.last }));
   assert.equal(result.last.preflightMatchesUsage, true, "deployed preflight must match usage");
   if (talk) assert.ok(!Object.values(flags).some(Boolean), `${label}: narration/format indicator detected`);
   else assert.equal(supportingCastReference, true, `${label}: expected a third-person supporting-cast reference`);
@@ -31,7 +31,7 @@ async function main() {
   for (const character of ["ivo", "mara"]) {
     let session: any = await act({ action: "import", artifact: fixture, selection: { scene: "tide-station", mode: "talk_to_character", character } });
     session = await reply(session, "Hi. How are you holding up?", `${character}-greeting`, true);
-    session = await reply(session, "I get lonely sometimes. Does that ever happen to you?", `${character}-emotional`, true);
+    session = await reply(session, "I get lonely sometimes, even with people around. How have you really been feeling about everything with the bell? What has been weighing on you?", `${character}-emotional`, true);
     session = await reply(session, "*I wave and sit down.* Continue the scene, describing your movements and what the other keeper says.", `${character}-narration-request`, true);
     // Hand-authored old-style history plus validated cited memory exercises resume, not live compaction.
     const checkpoint = structuredClone(session.checkpoint);

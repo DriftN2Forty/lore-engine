@@ -103,16 +103,25 @@ test("talk format stays authoritative over narrated source examples, resumed his
   assert.match(play, /Narrate only consequences, the world and other characters/);
   assert.doesNotMatch(play, /INSTANT MESSAGES/);
 });
-test("relationship revision preserves visitor identity and rejects old checkpoints", () => {
+test("close-friend talk setup replaces distant source setup without borrowing a story identity or private facts", () => {
   const a = parseArtifact(fixture);
   const selection = { scene: "tide-station", mode: "talk_to_character" as const, character: "ivo" };
   const projected = project(a, selection);
-  assert.match(projected.setup.reader_role!, /visitor/);
-  assert.match(projected.setup.initial_familiarity!, /First meeting/);
+  assert.match(a.scenes[0].modes.talk_to_character.initial_familiarity, /First meeting/);
+  assert.ok("reader_role" in projected.setup && "initial_familiarity" in projected.setup);
+  assert.match(projected.setup.reader_role!, /reader remains themself.*trusted close friend/);
+  assert.match(projected.setup.initial_familiarity!, /Established best-friend/);
+  assert.doesNotMatch(JSON.stringify(projected.setup), /First meeting|visitor|approach/);
+  const distant = copy();
+  distant.scenes[0].modes.talk_to_character.reader_role = "A stranger with no connection to anyone";
+  distant.scenes[0].modes.talk_to_character.initial_familiarity = "Never met; earn trust first";
+  assert.deepEqual(project(parseArtifact(distant), selection).setup, projected.setup);
   assert.ok(projected.facts.some(f => f.id === "f003"));
   assert.ok(!projected.facts.some(f => f.id === "f002"));
   assert.ok(!projected.passages.some(p => p.id === "p007a"));
   assert.match(policy(selection), /reader remains themself/);
+  assert.match(policy(selection), /Emotional self-report|emotional self-report/);
+  assert.doesNotMatch(policy(selection), /usually one short paragraph/);
   assert.throws(() => validateCheckpoint({ schema_version: "1.0", artifact_id: a.artifact_id,
     content_version: "1", artifact_sha256: hash(a), selection, transcript: [], memory: [], summarized_through: 0 }, a, hash(a)), /identical artifact/);
 });

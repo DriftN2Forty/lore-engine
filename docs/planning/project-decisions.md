@@ -31,7 +31,7 @@ The overview is the detailed operating specification. This document records why 
   - **Revisit when:** Funnel/renewal evidence suggests a different audience or the owner adds another published story.
 
 - [x] **D02 — Interaction modes.**
-  - **Selected:** Include both Talk to a character and Play as a character in preview and paid plans, with distinct role/agency instructions and shared source assets. Talk mode is direct instant-message-style conversation with only the selected character, without narration or action tags; play mode retains interactive scene narration (owner clarification, October 27, 2026).
+  - **Selected:** Include both Talk to a character and Play as a character in preview and paid plans, with distinct role/agency instructions and shared source assets. Talk mode is direct instant-message-style conversation with only the selected character, without narration or action tags; play mode retains interactive scene narration (owner clarification, October 27, 2026). The October 28 tuning establishes private close-friend trust and candid emotional sharing in Talk mode, replacing first-meeting distance and the short-paragraph preference. It does not invent shared memories, romance, reader identity or published facts; reply length follows substance.
   - **Rationale:** Both are part of the owner's stated offer. Reusing content keeps the second mode manageable without pretending the prompts are identical.
   - **Revisit when:** Measured quality or usage makes one mode disproportionately expensive to maintain; do not silently withdraw a sold benefit.
 
