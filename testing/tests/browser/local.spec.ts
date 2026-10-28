@@ -11,7 +11,7 @@ test("synthetic import, all options, checkpoint resume, reset, inert rendering a
   await page.getByRole("button", { name: "Load synthetic chapter" }).click();
   await expect(page.getByRole("heading", { name: fixture.story.title })).toBeVisible();
   await page.getByLabel("Your dialogue or action").fill("I ask about the bell.");
-  await page.getByRole("button", { name: "Send", exact: true }).click();
+  await page.getByLabel("Your dialogue or action").press("Enter");
   await expect(page.getByRole("alert").filter({ hasText: "Local model unavailable" })).toBeVisible();
   await expect(page.getByLabel("Your dialogue or action")).toHaveValue("I ask about the bell.");
   await expect(page.locator("article")).toHaveCount(0);
@@ -46,4 +46,67 @@ test("synthetic import, all options, checkpoint resume, reset, inert rendering a
   await page.getByLabel("Import chapter JSON").setInputFiles({ name: "bad.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(broken)) });
   await expect(page.getByRole("alert").filter({ hasText: "Invalid" })).toBeVisible();
   await expect(page.getByText(hostile.display.summary, { exact: true })).toBeVisible();
+});
+
+test("chat shortcuts preserve newlines and composition, send once, and scroll completed replies", async ({ page }) => {
+  let current: any, chats = 0;
+  const sent: string[] = [];
+  let releaseReply!: () => void;
+  const pendingReply = new Promise<void>(resolve => { releaseReply = resolve; });
+  await page.route("**/api/local", async route => {
+    const body = route.request().postDataJSON();
+    if (body.action === "project") {
+      await route.fulfill({ json: { projection: null, runtime: null } });
+    } else if (body.action === "chat") {
+      chats++;
+      const turn = chats;
+      sent.push(body.text);
+      if (turn === 1) await pendingReply;
+      current.checkpoint.transcript.push(
+        { id: `u-${turn}`, role: "user", content: body.text },
+        { id: `a-${turn}`, role: "assistant", content: Array.from({ length: 50 }, (_, i) => `Synthetic reply ${turn}, line ${i + 1}.`).join("\n") }
+      );
+      await route.fulfill({ json: current });
+    } else {
+      const response = await route.fetch();
+      if (body.action === "import") current = await response.json();
+      await route.fulfill({ response });
+    }
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Load synthetic chapter" }).click();
+  const composer = page.getByLabel("Your dialogue or action"), transcript = page.locator(".transcript");
+  await expect(composer).toBeEnabled();
+  await composer.press("Enter");
+  await composer.fill("   ");
+  await composer.press("Enter");
+  await composer.fill("First line");
+  await composer.press("Shift+Enter");
+  await composer.pressSequentially("Second line");
+  await expect(composer).toHaveValue("First line\nSecond line");
+  await composer.dispatchEvent("keydown", { key: "Enter", code: "Enter", isComposing: true });
+  await composer.dispatchEvent("keydown", { key: "Enter", code: "Enter", keyCode: 229 });
+  await composer.dispatchEvent("keydown", { key: "Enter", code: "Enter", repeat: true });
+  expect(chats).toBe(0);
+  await composer.press("Enter");
+  await expect(composer).toBeDisabled();
+  expect(sent).toEqual(["First line\nSecond line"]);
+  await composer.evaluate(el => el.closest("form")!.requestSubmit());
+  expect(chats).toBe(1);
+  releaseReply();
+  await expect(composer).toBeEnabled();
+  await expect(composer).toHaveValue("");
+  await expect(transcript.locator("article")).toHaveCount(2);
+  await expect.poll(() => transcript.evaluate(el => el.scrollHeight > el.clientHeight && el.scrollHeight - el.clientHeight - el.scrollTop <= 1)).toBe(true);
+
+  await transcript.evaluate(el => { el.scrollTop = 0; });
+  await composer.fill("Another message");
+  const refreshed = page.waitForResponse(r => r.url().endsWith("/api/local") && r.request().postDataJSON().action === "project");
+  await page.getByRole("button", { name: "Refresh runtime metrics" }).click();
+  await refreshed;
+  await expect.poll(() => transcript.evaluate(el => el.scrollTop)).toBe(0);
+  await page.getByRole("button", { name: "Send", exact: true }).click();
+  await expect(transcript.locator("article")).toHaveCount(4);
+  await expect.poll(() => transcript.evaluate(el => el.scrollHeight - el.clientHeight - el.scrollTop)).toBeLessThanOrEqual(1);
+  expect(sent).toEqual(["First line\nSecond line", "Another message"]);
 });

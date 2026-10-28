@@ -20,6 +20,7 @@ export default function Page() {
   const [error, setError] = useState(""), [projection, setProjection] = useState<Projection | null>(null), [metricError, setMetricError] = useState("");
   const [memory, setMemory] = useState("[]"), [revision, setRevision] = useState(0);
   const metricSeq = useRef(0);
+  const transcript = useRef<HTMLDivElement>(null);
   const adopt = (s: State) => { setState(s); setMemory(JSON.stringify(s.checkpoint.memory, null, 2)); setProjection(null); setText(""); };
   async function run(task: () => Promise<void>) { setBusy(true); setError(""); try { await task(); } catch (e) { setError(e instanceof Error ? e.message : "Request failed"); } finally { setBusy(false); } }
   useEffect(() => {
@@ -35,6 +36,11 @@ export default function Page() {
     }, 500);
     return () => { clearTimeout(timeout); metricSeq.current++; };
   }, [state?.session, state?.checkpoint, text, busy, revision]);
+  const lastMessageId = state?.checkpoint.transcript.at(-1)?.id;
+  useEffect(() => {
+    const container = transcript.current;
+    if (container) container.scrollTop = container.scrollHeight;
+  }, [state?.session, lastMessageId]);
   const a = state?.artifact, c = state?.checkpoint, scene = a?.scenes.find(s => s.id === c?.selection.scene);
   const exchanges = (c?.transcript.length ?? 0) / 2;
   const uncompactedExchanges = ((c?.transcript.length ?? 0) - (c?.summarized_through ?? 0)) / 2;
@@ -85,9 +91,14 @@ export default function Page() {
           <p className="muted">Uncompacted exchanges: {uncompactedExchanges} / 12. {uncompactedExchanges >= 12 ? "Periodic compaction is due before the next reply." : "Periodic compaction is due before the next reply once this reaches 12."} One exchange is your message plus a completed RVN reply. Retained recent exchanges count toward this threshold; context overflow can trigger compaction sooner.</p>
         </div>
         <p className="muted">{c!.selection.mode === "play_as_character" ? "You control your character's speech, actions, decisions and thoughts." : "You remain yourself; the model portrays the selected character."}</p>
-        <div className="transcript" aria-live="polite">{c!.transcript.map(m => <article className={m.role} key={m.id}><strong>{m.role === "user" ? "You" : "RVN"}</strong><p>{m.content}</p></article>)}</div>
-        <form onSubmit={e => { e.preventDefault(); void run(async () => adopt(await api({ action: "chat", session: state.session, text }))); }}>
-          <label htmlFor="message">Your dialogue or action</label><textarea id="message" value={text} onChange={e => setText(e.target.value)} maxLength={6000} disabled={busy} rows={4} />
+        <div ref={transcript} className="transcript" aria-live="polite">{c!.transcript.map(m => <article className={m.role} key={m.id}><strong>{m.role === "user" ? "You" : "RVN"}</strong><p>{m.content}</p></article>)}</div>
+        <form onSubmit={e => { e.preventDefault(); if (busy || !text.trim()) return; void run(async () => adopt(await api({ action: "chat", session: state.session, text }))); }}>
+          <label htmlFor="message">Your dialogue or action</label><textarea id="message" value={text} onChange={e => setText(e.target.value)} onKeyDown={e => {
+            if (e.key !== "Enter" || e.shiftKey || e.nativeEvent.isComposing || e.keyCode === 229) return;
+            e.preventDefault();
+            if (!e.repeat) e.currentTarget.form?.requestSubmit();
+          }} aria-describedby="message-shortcuts" maxLength={6000} disabled={busy} rows={4} />
+          <p id="message-shortcuts" className="muted">Enter to send · Shift+Enter for a new line.</p>
           <button disabled={busy || !text.trim()}>{busy ? "Preparing complete response…" : projection?.memoryDue || projection?.overBudget ? "Compact memory and send" : "Send"}</button>
           <p className="muted">Failed/incomplete generations do not enter history. The server rejects overflow after attempting bounded memory compaction.</p>
         </form>
