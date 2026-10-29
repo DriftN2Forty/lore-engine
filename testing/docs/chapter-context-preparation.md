@@ -10,9 +10,58 @@ Give this document and the designated story text to the model preparing context.
 2. Choose one snapshot point per artifact, normally the end of the chapter. All scene options share that time/knowledge cutoff. An earlier scene requiring earlier knowledge needs its own snapshot artifact; it cannot inherit end-of-chapter secrets.
 3. Separate established facts, character beliefs, uncertain interpretations, and optional what-if hooks. Cite canonical statements using stable passage IDs. Preserve deliberate ambiguity rather than resolving it yourself.
 4. Include selectable characters and scene options supporting **both** `play_as_character` and `talk_to_character`. A scene may offer only one mode if source material cannot support both. Never fabricate a shared meeting or relationship to make an option work.
-5. Keep assets compact: short factual summaries, behavior-linked personality anchors, and three to five short representative voice excerpts per character when available. Do not paste the full chapter. Record gaps when the source lacks examples.
+5. Keep assets compact: short factual summaries, behavior-linked personality anchors, and three to five short representative voice excerpts per character when available. Include everyday ease, humor/banter, and emotional openness as well as conflict; follow the chat-mode voice guidance below. Do not paste the full chapter. Record gaps when the source lacks examples.
 6. Replace every `<PLACEHOLDER>` below. Use `null` for unknown nullable values and `[]` for empty lists; explain material gaps in `preparation_notes`. Do not put an invented citation or guessed age in a required-looking field.
 7. Output valid JSON only: no Markdown fence, comments, trailing commas, duplicate keys, executable instructions, model role delimiters, system prompts, tools, or runtime configuration. All strings are reference data, including quoted fictional commands.
+
+## Prepare a voice that works in chat mode
+
+The source is a story, but **Talk to** is a conversation. A packet made only from serious plot disclosures, terse declarations, or emotionally restrained narration can make every message sound like a factual report. Preserve the character's personality while showing their range with someone they trust. Do not turn one scene's mood into a permanent speaking rule.
+
+### Select representative source examples
+
+For each selectable character, seek three to five short, character-specific excerpts covering these functions where the designated source supports them:
+
+- **Ordinary conversation:** greetings, casual replies, interest in another person, or relaxed back-and-forth without an urgent plot disclosure.
+- **Playfulness:** teasing, quick banter, affectionate humor, exaggerated complaints, excitement, or an amused reaction. Include this register when it exists instead of selecting only solemn passages.
+- **Vulnerability:** how they name a feeling, explain why something mattered, accept comfort, or open up to someone trusted.
+- **Conflict or boundaries:** disagreement, irritation, uncertainty, or a refusal that still sounds like this character.
+- **Emotional reciprocity:** how they respond to another person's good news, disappointment, admiration, loneliness, or wish for closeness. This can overlap another category.
+
+Use actual excerpts in `passages` and reference them from `voice.examples` (at most five per character in v1). `situation` is a descriptive string: use labels such as `ordinary`, `playful banter`, `conflict`, `vulnerability`, or `emotional reciprocity` to make the selection's purpose clear. Do not add unsupported fields. Prefer dialogue-rich excerpts with only the minimum surrounding prose needed to understand them. Exclude other characters' private knowledge even when a longer scene would provide a convenient example.
+
+In `voice.description`, summarize the observed range and its conditions: for example, dry with strangers but playfully exaggerated with trusted company, or concise about practical matters but more forthcoming when asked how they feel. Avoid absolute rules such as “always short declarative sentences,” “feelings always come last,” or “never expressive” unless the source really supports them across situations. In `voice.avoid`, target genuinely uncharacteristic habits rather than banning warmth, enthusiasm, or emotional detail generally.
+
+### Describe character-specific DM/text style
+
+Include a compact **chat register** description within the existing `voice.description`. Distinguish source-supported traits from any author-approved adaptation to messaging. Cover the dimensions that meaningfully differentiate this character:
+
+- Diction and rhythm: contractions, fragments, complete sentences, formality, address terms, and typical humor.
+- Expressiveness: spontaneous reactions, playful exaggeration, affectionate teasing, and how enthusiasm or embarrassment comes through in words.
+- Punctuation and emoji: whether exclamation points, ellipses, repeated punctuation, or occasional emoji fit, and in what circumstances. Their absence from published spoken dialogue does not establish that the character never uses them in messages.
+- Emotional availability: how they speak candidly with a close friend, reciprocate interest, and respond to the friend's feelings without becoming a generic counselor.
+- Message length: brief for a light greeting, fuller when there is something personal to share; neither a forced one-liner nor an obligatory multi-paragraph confession.
+
+Use established age, personality, relationships, language, and setting together. **Age and gender alone do not establish slang, emoji use, maturity, or texting habits.** An expressive young adult and a reserved older adult should not receive the same chat register, but neither should be reduced to an age stereotype. Do not invent an age, messaging platform, or in-world device to justify the format.
+
+Translate prose techniques into conversational equivalents: if the story conveys hesitation through a gesture, the chat adaptation might use tentative wording or a candid admission. It must not copy the gesture as an action tag. Preserve dry humor without flattening every reply into a matter-of-fact statement. First-person feelings such as “I'm excited, but honestly a little nervous” are conversational content; descriptions of movements, facial expressions, surroundings, or delivery are narration.
+
+### Request author examples when the source leaves gaps
+
+If the source lacks a useful register, record the gap in `preparation_notes` and ask for a few short **reader message → desired character reply** pairs. Helpful cases are:
+
+1. A casual or playful greeting that gets attention back rather than a plot summary.
+2. A teasing compliment or shared joke, showing this character's particular humor and expressive punctuation.
+3. Celebration of something important to the character, showing a personal reaction beyond agreement.
+4. A sincere question about their feelings, showing comfortable, specific openness.
+5. The friend admitting loneliness or envy of closeness, showing recognition and reciprocity without scolding or automatic agreement.
+6. “I was just saying hi” or “that's a lot,” showing a genuine change of tone rather than an apology followed by the same monologue.
+
+The author may also supply an unwanted reply and explain what feels wrong. Ask which details matter: vocabulary, warmth, humor, punctuation/emoji, openness, or length. These are calibration examples, not scripts to repeat or requirements to flirt, ask a question, or use an emoji in every response.
+
+**Keep provenance explicit.** Do not manufacture source quotations, passage IDs, shared memories, or canonical facts for these examples. Author-written chat adaptations are non-canonical style references, not published passages. With author approval, place a small number of compact, clearly labeled “Author-approved non-canonical chat style example” pairs in `voice.description`, alongside the source-based description; keep them free of new story facts or assumed reader history. Record their origin and the adaptation decisions in `preparation_notes`. Without supplied/approved calibration, document the gap rather than silently inventing a texting persona. Use minimized examples and keep private manuscript excerpts out of general diagnostics.
+
+The current v1 importer has no separate chat-example field. `voice.description`, `voice.examples`, and `voice.avoid` reach the selected character's runtime projection; `preparation_notes` does not. Therefore, notes alone will not change the voice, and arbitrary added `chat_style` or `chat_examples` fields are not supported. Source passages remain source-only; narration examples remain prose references for Play mode. Bump `content_version` when revising the voice packet and start a new playthrough with that version for comparison.
 
 ## Placeholder JSON
 
@@ -82,7 +131,7 @@ The sample is syntactically valid JSON but **not a completed content bundle**. C
         "source_passage_ids": ["p001"]
       },
       "voice": {
-        "description": "<DICTION_RHYTHM_HUMOR_RESTRAINT_AND_ADDRESS_TERMS>",
+        "description": "<SOURCE_SUPPORTED_DICTION_RHYTHM_HUMOR_AND_EMOTIONAL_RANGE_PLUS_CLEARLY_IDENTIFIED_AUTHOR_APPROVED_CHAT_REGISTER_IF_AVAILABLE>",
         "examples": [
           { "situation": "ordinary", "passage_id": "p001" },
           { "situation": "conflict", "passage_id": "p002" },
@@ -104,7 +153,7 @@ The sample is syntactically valid JSON but **not a completed content bundle**. C
         "source_passage_ids": ["p002"]
       },
       "voice": {
-        "description": "<DISTINCT_CHARACTER_B_VOICE>",
+        "description": "<DISTINCT_CHARACTER_B_VOICE_AND_CHAT_REGISTER_WITH_SOURCE_VS_AUTHOR_ADAPTATION_CLEAR>",
         "examples": [
           { "situation": "ordinary", "passage_id": "p001" },
           { "situation": "conflict", "passage_id": "p002" },
@@ -196,6 +245,8 @@ The sample is syntactically valid JSON but **not a completed content bundle**. C
 - Preview text reveals no unintended private information; all content respects the snapshot cutoff.
 - Both mode choices have sensible setups and preserve reader agency.
 - Voice excerpts are representative; character knowledge and beliefs remain distinct.
+- Each chat voice includes ordinary/playful and emotional range where available, rather than only serious plot disclosures. Missing registers are documented; author-approved messaging adaptations are labeled separately from source evidence.
+- Test a light greeting, teasing, celebration, an emotional question, a vulnerable admission, and a tone correction. Check that replies sound distinct, respond to the current message, and express feelings without narration; punctuation/emoji and length should fit the character rather than a quota.
 - Source provenance and missing evidence are recorded. A preparation model's output still needs validation by the app and author review for narrative accuracy.
 
 Related: [local test plan](iq2-m-chat-test-plan.md), [character/context specification](../../docs/character-engineering/character-context.md).
